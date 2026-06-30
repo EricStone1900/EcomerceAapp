@@ -3,61 +3,54 @@
 import PackageDescription
 
 let package = Package(
-    name: "Abstraction",
+    name: "WebContainerFeature",
     platforms: [.iOS(.v15)],
-    products: AbstractionProduct.allCases.map(\.product),
+    products: WebContainerFeatureProduct.allCases.map(\.product),
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
+        .package(path: "../Abstraction"),
+        .package(path: "../Domain"),
+        .package(path: "../Utilities/Utils")
     ],
-    targets: AbstractionProduct.allCases.map(\.target) + AbstractionProduct.allCases.flatMap(\.testsTargets)
+    targets: WebContainerFeatureProduct.allCases.map(\.target) + WebContainerFeatureProduct.allCases.flatMap(\.testsTargets)
 )
 
-enum AbstractionProduct: String, CaseIterable {
-    
-    case ProductAbstraction
+enum WebContainerFeatureProduct: String, CaseIterable {
 
-    case BasketAbstraction
-        
-    case UserAbstraction
-
-    case DIAbstraction
-
-    case AnalyticsAbstraction
-
-    case WebContainerAbstraction
+    case WebContainerFeature
 
     // MARK: - Properties
 
-    var path: String { "Sources/Abstraction/\(rawValue)" }
+    var path: String { "Sources/\(rawValue)" }
 
     var testsPath: String { "Tests/\(rawValue)Tests" }
 
     var testsName: String { "\(rawValue)Tests" }
 
     var product: Product { Product.Library.library(product: self) }
-    
+
 }
 
 enum ExternalModule: String {
-    
+
     case Swinject
-    
+
     case RxSwift
 
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .Swinject:
-            
+
             .product(
                 name: "Swinject",
                 package: "Swinject"
             )
-            
+
         case .RxSwift:
-            
+
             .product(
                 name: "RxSwift",
                 package: "RxSwift"
@@ -66,107 +59,116 @@ enum ExternalModule: String {
     }
 }
 
-extension AbstractionProduct {
-    
+enum AbstractionModule: String {
+
+    case WebContainerAbstraction
+
+    case DIAbstraction
+
+    var dependency: Target.Dependency {
+
+        return switch self {
+
+        case .WebContainerAbstraction:
+
+            .product(
+                name: "WebContainerAbstraction",
+                package: "Abstraction"
+            )
+
+        case .DIAbstraction:
+
+            .product(
+                name: "DIAbstraction",
+                package: "Abstraction"
+            )
+        }
+    }
+}
+
+enum DomainModule: String {
+
+    case WebContainerDomain
+
+    var dependency: Target.Dependency {
+
+        return switch self {
+
+        case .WebContainerDomain:
+
+            .product(
+                name: "WebContainerDomain",
+                package: "Domain"
+            )
+        }
+    }
+}
+
+enum Utility: String {
+
+    case Utils
+
+    var dependency: Target.Dependency {
+
+        return switch self {
+
+        case .Utils:
+
+            .product(
+                name: "Utils",
+                package: "Utils"
+            )
+        }
+    }
+}
+
+extension WebContainerFeatureProduct {
+
     var target: Target {
         .target(
             framework: self,
             dependencies: dependencies,
+//            resources: [.copy("Resources")],
+            resources: [.process("Resources")],
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         )
     }
-    
-    var testsTargets: [Target] {
-        switch self {
-        case .WebContainerAbstraction:
-            return []
 
-        default:
-            return [
-                .testTarget(
-                    framework: self,
-                    dependencies: testsDependencies
-                )
-            ]
-        }
+    var testsTargets: [Target] {
+        return []
     }
-    
+
     var dependencies: [Target.Dependency] {
         return switch self {
-            
-        case .ProductAbstraction:
-            [
-                .external(.RxSwift)
-            ]
-            
-        case .BasketAbstraction:
-            [
-                .external(.RxSwift)
-            ]
-            
-        case .UserAbstraction:
-            [
-                .external(.RxSwift)
-            ]
 
-        case .DIAbstraction:
+        case .WebContainerFeature:
             [
-                .external(.Swinject)
-            ]
-
-        case .AnalyticsAbstraction:
-            [
-
-            ]
-
-        case .WebContainerAbstraction:
-            [
-                .external(.RxSwift)
+                .external(.RxSwift),
+                .external(.Swinject),
+                .abstraction(.WebContainerAbstraction),
+                .abstraction(.DIAbstraction),
+                .domain(.WebContainerDomain),
+                .utility(.Utils),
             ]
         }
-            
+
     }
-    
+
     var testsDependencies: [Target.Dependency] {
 
         switch self {
-            
-        case .ProductAbstraction:
-            [
-                .internal(.ProductAbstraction)
-            ]
-            
-        case .BasketAbstraction:
-            [
-                .internal(.BasketAbstraction)
-            ]
-            
-        case .UserAbstraction:
-            [
-                .internal(.UserAbstraction)
-            ]
-            
-        case .DIAbstraction:
-            [
-                .internal(.DIAbstraction)
-            ]
 
-        case .AnalyticsAbstraction:
+        case .WebContainerFeature:
             [
-                .internal(.AnalyticsAbstraction)
-            ]
-
-        case .WebContainerAbstraction:
-            [
-                .internal(.WebContainerAbstraction)
+                .internal(.WebContainerFeature)
             ]
         }
     }
 }
 
 extension Product.Library {
-    
-    static func library(product: AbstractionProduct) -> Product {
+
+    static func library(product: WebContainerFeatureProduct) -> Product {
         .library(
             name: product.rawValue,
             type: nil,
@@ -176,9 +178,9 @@ extension Product.Library {
 }
 
 extension Target {
-    
+
     static func target(
-        framework: AbstractionProduct,
+        framework: WebContainerFeatureProduct,
         dependencies: [Target.Dependency] = [],
         exclude: [String] = [],
         sources: [String]? = nil,
@@ -204,9 +206,9 @@ extension Target {
             linkerSettings: linkerSettings
         )
     }
-    
+
     static func testTarget(
-        framework: AbstractionProduct,
+        framework: WebContainerFeatureProduct,
         dependencies: [Target.Dependency] = [],
         exclude: [String] = [],
         sources: [String]? = nil,
@@ -216,7 +218,7 @@ extension Target {
         swiftSettings: [SwiftSetting]? = nil,
         linkerSettings: [LinkerSetting]? = nil
     ) -> Target {
-        
+
         .testTarget(
             name: framework.testsName,
             dependencies: dependencies,
@@ -234,14 +236,32 @@ extension Target {
 
 extension Target.Dependency {
 
-    static func `internal`(_ product: AbstractionProduct) -> Target.Dependency {
+    static func `internal`(_ product: WebContainerFeatureProduct) -> Target.Dependency {
 
         Target.Dependency(stringLiteral: product.rawValue)
     }
-    
+
     static func external(_ module: ExternalModule) -> Target.Dependency {
 
         module.dependency
-        
+
+    }
+
+    static func abstraction(_ module: AbstractionModule) -> Target.Dependency {
+
+        module.dependency
+
+    }
+
+    static func domain(_ module: DomainModule) -> Target.Dependency {
+
+        module.dependency
+
+    }
+
+    static func utility(_ module: Utility) -> Target.Dependency {
+
+        module.dependency
+
     }
 }

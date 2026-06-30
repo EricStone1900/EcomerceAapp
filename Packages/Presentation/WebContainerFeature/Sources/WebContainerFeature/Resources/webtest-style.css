@@ -1,0 +1,267 @@
+/* ====== WebTest 样式 ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #f5f5f7;
+    --card-bg: #ffffff;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --border: #d2d2d7;
+    --primary: #007aff;
+    --primary-hover: #0056cc;
+    --secondary: #5856d6;
+    --secondary-hover: #3a38a0;
+    --accent: #ff9500;
+    --accent-hover: #cc7700;
+    --ghost: #8e8e93;
+    --ghost-hover: #636366;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px;
+    padding-bottom: 40px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ====== Header ====== */
+header {
+    text-align: center;
+    padding: 24px 0 20px;
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ====== Card ====== */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 0;
+}
+
+.card-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--border);
+    color: var(--text-secondary);
+}
+
+.badge:contains("核心验证") {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.card-body {
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ====== Buttons ====== */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, transform 0.1s;
+    min-height: 48px;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+.btn-primary:active {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: #fff;
+}
+.btn-secondary:active {
+    background: var(--secondary-hover);
+}
+
+.btn-accent {
+    background: var(--accent);
+    color: #fff;
+}
+.btn-accent:active {
+    background: var(--accent-hover);
+}
+
+.btn-ghost {
+    background: #f0f0f0;
+    color: var(--ghost);
+}
+.btn-ghost:active {
+    background: #e0e0e0;
+    color: var(--ghost-hover);
+}
+
+.btn-small {
+    width: auto;
+    padding: 6px 14px;
+    font-size: 13px;
+    min-height: 32px;
+}
+
+/* ====== Input ====== */
+.field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: -4px;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    background: #fafafa;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    background: #fff;
+}
+
+.input-mono {
+    font-family: "SF Mono", Menlo, Monaco, monospace;
+    font-size: 14px;
+}
+
+/* ====== Log Area ====== */
+.log-card .card-body {
+    padding-top: 4px;
+}
+
+.log-area {
+    font-family: "SF Mono", Menlo, Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    background: #f0f0f2;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    min-height: 80px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* ====== Footer ====== */
+footer {
+    text-align: center;
+    padding: 20px 0 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ====== 触控反馈 ====== */
+@media (hover: none) {
+    .btn:active {
+        opacity: 0.8;
+    }
+    .input:focus {
+        font-size: 16px;
+    }
+}
+
+/* ====== 深色模式 ====== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1c1c1e;
+        --card-bg: #2c2c2e;
+        --text: #f5f5f7;
+        --text-secondary: #98989d;
+        --border: #38383a;
+        --primary: #0a84ff;
+        --primary-hover: #0060df;
+        --secondary: #5e5ce6;
+        --secondary-hover: #4a48c0;
+        --accent: #ff9f0a;
+        --accent-hover: #d68400;
+        --ghost: #8e8e93;
+        --ghost-hover: #aeaeb2;
+    }
+
+    .btn-ghost {
+        background: #3a3a3c;
+        color: var(--ghost);
+    }
+    .btn-ghost:active {
+        background: #48484a;
+    }
+
+    .input {
+        background: #3a3a3c;
+        border-color: var(--border);
+        color: var(--text);
+    }
+    .input:focus {
+        background: #2c2c2e;
+    }
+
+    .log-area {
+        background: #1c1c1e;
+        color: var(--text-secondary);
+    }
+}

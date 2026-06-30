@@ -25,6 +25,10 @@
 		38F690BF2E58E51D009220B0 /* BasketData in Frameworks */ = {isa = PBXBuildFile; productRef = 38F690BE2E58E51D009220B0 /* BasketData */; };
 		38F690C12E58EFAD009220B0 /* ProductData in Frameworks */ = {isa = PBXBuildFile; productRef = 38F690C02E58EFAD009220B0 /* ProductData */; };
 		38F690C32E58EFAE009220B0 /* UserData in Frameworks */ = {isa = PBXBuildFile; productRef = 38F690C22E58EFAE009220B0 /* UserData */; };
+		5807AA892FF36CBF00073536 /* WebContainerAbstraction in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA882FF36CBF00073536 /* WebContainerAbstraction */; };
+		5807AA8B2FF36CBF00073536 /* WebContainerData in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8A2FF36CBF00073536 /* WebContainerData */; };
+		5807AA8D2FF36CBF00073536 /* WebContainerDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8C2FF36CBF00073536 /* WebContainerDomain */; };
+		5807AA8F2FF36CBF00073536 /* WebContainerFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8E2FF36CBF00073536 /* WebContainerFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +61,7 @@
 		38F690BA2E58E099009220B0 /* Analytics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Analytics; sourceTree = "<group>"; };
 		38F690BB2E58E099009220B0 /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utils; sourceTree = "<group>"; };
 		38F690BD2E58E0DD009220B0 /* Data */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Data; sourceTree = "<group>"; };
+		580940FF2FF3F16A0038628E /* WebContainerFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WebContainerFeature; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,9 +87,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5807AA8D2FF36CBF00073536 /* WebContainerDomain in Frameworks */,
+				5807AA8F2FF36CBF00073536 /* WebContainerFeature in Frameworks */,
 				3822D3332CC2E56F009374EF /* Utils in Frameworks */,
 				38461F612E59FB300048247E /* Analytics in Frameworks */,
 				38F690C32E58EFAE009220B0 /* UserData in Frameworks */,
+				5807AA8B2FF36CBF00073536 /* WebContainerData in Frameworks */,
 				38F43DE22CBC0ADE002EACA3 /* LoginFeature in Frameworks */,
 				38CD379D2CC29598009D657A /* DIAbstraction in Frameworks */,
 				38CD379B2CC29598009D657A /* BasketAbstraction in Frameworks */,
@@ -97,6 +105,7 @@
 				38AB65F02CBACF3B00E1D034 /* ProductsFeature in Frameworks */,
 				38CD37A32CC2959F009D657A /* BasketDomain in Frameworks */,
 				38CD379F2CC29598009D657A /* ProductAbstraction in Frameworks */,
+				5807AA892FF36CBF00073536 /* WebContainerAbstraction in Frameworks */,
 				38F690BF2E58E51D009220B0 /* BasketData in Frameworks */,
 				38461F632E5A412F0048247E /* AnalyticsAbstraction in Frameworks */,
 				38461F652E5A44F60048247E /* AnalyticsDomain in Frameworks */,
@@ -123,6 +132,7 @@
 		38AB65EC2CBACC2100E1D034 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				580940FF2FF3F16A0038628E /* WebContainerFeature */,
 				38958B262CC052AC00FECB60 /* BasketFeature */,
 				38F43DDF2CBBFD2F002EACA3 /* LoginFeature */,
 				38AB65ED2CBACC6A00E1D034 /* ProductsFeature */,
@@ -219,6 +229,9 @@
 				38461F602E59FB300048247E /* Analytics */,
 				38461F622E5A412F0048247E /* AnalyticsAbstraction */,
 				38461F642E5A44F60048247E /* AnalyticsDomain */,
+				5807AA882FF36CBF00073536 /* WebContainerAbstraction */,
+				5807AA8A2FF36CBF00073536 /* WebContainerData */,
+				5807AA8C2FF36CBF00073536 /* WebContainerDomain */,
 			);
 			productName = MyEcommerce;
 			productReference = 38E8178B2CB84D6500086B2A /* MyEcommerce.app */;
@@ -303,14 +316,7 @@
 			mainGroup = 38E817822CB84D6500086B2A;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				38E817BD2CB8540200086B2A /* XCLocalSwiftPackageReference "Packages/Networking" */,
-				38AB65E52CBA913500E1D034 /* XCLocalSwiftPackageReference "Packages/Domain" */,
-				38AB65EE2CBACF3B00E1D034 /* XCLocalSwiftPackageReference "Packages/Features/ProductsFeature" */,
-				38F43DE02CBC0ADE002EACA3 /* XCLocalSwiftPackageReference "Packages/Features/LoginFeature" */,
-				38958B272CC053DF00FECB60 /* XCLocalSwiftPackageReference "Packages/Features/BasketFeature" */,
 				3822D32D2CC2E18F009374EF /* XCRemoteSwiftPackageReference "RxSwift" */,
-				3822D3312CC2E56F009374EF /* XCLocalSwiftPackageReference "Packages/Utilities/Utils" */,
-				6CCE24FC2F0C1F60000A4345 /* XCLocalSwiftPackageReference "Packages/Data" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 38E8178C2CB84D6500086B2A /* Products */;
@@ -676,37 +682,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		3822D3312CC2E56F009374EF /* XCLocalSwiftPackageReference "Packages/Utilities/Utils" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Utilities/Utils;
-		};
-		38958B272CC053DF00FECB60 /* XCLocalSwiftPackageReference "Packages/Features/BasketFeature" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Features/BasketFeature;
-		};
-		38AB65E52CBA913500E1D034 /* XCLocalSwiftPackageReference "Packages/Domain" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Domain;
-		};
-		38AB65EE2CBACF3B00E1D034 /* XCLocalSwiftPackageReference "Packages/Features/ProductsFeature" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Features/ProductsFeature;
-		};
-		38E817BD2CB8540200086B2A /* XCLocalSwiftPackageReference "Packages/Networking" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Networking;
-		};
-		38F43DE02CBC0ADE002EACA3 /* XCLocalSwiftPackageReference "Packages/Features/LoginFeature" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Features/LoginFeature;
-		};
-		6CCE24FC2F0C1F60000A4345 /* XCLocalSwiftPackageReference "Packages/Data" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Data;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		3822D32D2CC2E18F009374EF /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -790,6 +765,22 @@
 		38F690C22E58EFAE009220B0 /* UserData */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UserData;
+		};
+		5807AA882FF36CBF00073536 /* WebContainerAbstraction */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebContainerAbstraction;
+		};
+		5807AA8A2FF36CBF00073536 /* WebContainerData */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebContainerData;
+		};
+		5807AA8C2FF36CBF00073536 /* WebContainerDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebContainerDomain;
+		};
+		5807AA8E2FF36CBF00073536 /* WebContainerFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebContainerFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -22,6 +22,8 @@ enum DataProduct: String, CaseIterable {
 
     case UserData
 
+    case WebContainerData
+
     // MARK: - Properties
 
     var path: String { "Sources/Data/\(rawValue)" }
@@ -80,6 +82,8 @@ enum AbstractionModule: String {
 
     case DIAbstraction
 
+    case WebContainerAbstraction
+
     var dependency: Target.Dependency {
 
         return switch self {
@@ -109,6 +113,13 @@ enum AbstractionModule: String {
                 name: "DIAbstraction",
                 package: "Abstraction"
             )
+
+        case .WebContainerAbstraction:
+
+            .product(
+                name: "WebContainerAbstraction",
+                package: "Abstraction"
+            )
         }
     }
 }
@@ -124,12 +135,18 @@ extension DataProduct {
     }
 
     var testsTargets: [Target] {
-        [
-            .testTarget(
-                framework: self,
-                dependencies: testsDependencies
-            )
-        ]
+        switch self {
+        case .WebContainerData:
+            return []
+
+        default:
+            return [
+                .testTarget(
+                    framework: self,
+                    dependencies: testsDependencies
+                )
+            ]
+        }
     }
 
     var dependencies: [Target.Dependency] {
@@ -158,6 +175,13 @@ extension DataProduct {
                 .abstraction(.DIAbstraction),
                 .utility(.API)
             ]
+
+        case .WebContainerData:
+            [
+                .external(.RxSwift),
+                .abstraction(.WebContainerAbstraction),
+                .abstraction(.DIAbstraction),
+            ]
         }
 
     }
@@ -179,6 +203,11 @@ extension DataProduct {
         case .UserData:
             [
                 .internal(.UserData)
+            ]
+
+        case .WebContainerData:
+            [
+                .internal(.WebContainerData)
             ]
 
         }

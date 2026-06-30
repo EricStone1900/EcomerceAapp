@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>WebTest</title>
+    <link rel="stylesheet" href="webtest-style.css">
+</head>
+<body>
+    <header>
+        <h1>🧪 WebTest</h1>
+        <p>WebContainer Bridge 功能验证</p>
+    </header>
+
+    <!-- ====== Group 1: 固定路由跳转 ====== -->
+    <section class="card">
+        <div class="card-header">
+            <h2>分组一：固定路由跳转</h2>
+            <span class="badge">无参数</span>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-primary" onclick="navigateToNativeScreen()">
+                跳转原生测试页
+            </button>
+            <button class="btn btn-secondary" onclick="presentSheet()">
+                弹出 Sheet
+            </button>
+            <button class="btn btn-ghost" onclick="dismissCurrent()">
+                关闭当前页
+            </button>
+        </div>
+    </section>
+
+    <!-- ====== Group 2: 系统能力调用 ====== -->
+    <section class="card">
+        <div class="card-header">
+            <h2>分组二：系统能力调用</h2>
+            <span class="badge">验证 Bridge</span>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-primary" onclick="openCamera()">
+                打开相机
+            </button>
+            <button class="btn btn-secondary" onclick="shareContent()">
+                分享文本
+            </button>
+            <button class="btn btn-ghost" onclick="showAlert()">
+                弹出 Alert
+            </button>
+        </div>
+    </section>
+
+    <!-- ====== Group 3: 动态参数跳转商品详情 ====== -->
+    <section class="card">
+        <div class="card-header">
+            <h2>分组三：动态商品跳转</h2>
+            <span class="badge">核心验证</span>
+        </div>
+        <div class="card-body">
+            <p class="field-label">商品 ID</p>
+            <input
+                type="text"
+                id="productIdInput"
+                class="input"
+                placeholder="请输入商品ID，如 42"
+                autocomplete="off"
+            />
+            <button class="btn btn-accent" onclick="navigateToProductDetail()">
+                跳转商品详情页
+            </button>
+        </div>
+    </section>
+
+    <!-- ====== Group 4: 自定义函数调用 ====== -->
+    <section class="card">
+        <div class="card-header">
+            <h2>分组四：自定义函数调用</h2>
+            <span class="badge">扩展点</span>
+        </div>
+        <div class="card-body">
+            <p class="field-label">JSON 参数</p>
+            <input
+                type="text"
+                id="functionParamsInput"
+                class="input input-mono"
+                placeholder='{"key": "value"}'
+                autocomplete="off"
+            />
+            <button class="btn btn-secondary" onclick="callCustomFunction()">
+                调用自定义函数
+            </button>
+        </div>
+    </section>
+
+    <!-- ====== Log Area ====== -->
+    <section class="card log-card">
+        <div class="card-header">
+            <h2>调用日志</h2>
+            <button class="btn btn-small btn-ghost" onclick="clearLog()">清除</button>
+        </div>
+        <div class="card-body">
+            <pre id="logArea" class="log-area">等待操作...</pre>
+        </div>
+    </section>
+
+    <footer>
+        <p>WebContainer Bridge v1.0 · 本地测试页</p>
+    </footer>
+
+    <script>
+        // ---------- 日志工具 ----------
+        function appendLog(message) {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            const line = `[${timestamp}] ${message}`;
+            if (logArea.textContent === '等待操作...') {
+                logArea.textContent = line;
+            } else {
+                logArea.textContent = line + '\n' + logArea.textContent;
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('logArea').textContent = '等待操作...';
+        }
+
+        // ---------- Bridge 调用基础函数 ----------
+        function postBridgeMessage(action, target, params) {
+            const message = {
+                action: action,
+                target: target,
+                params: params || {}
+            };
+            appendLog(`→ 发送: ${JSON.stringify(message)}`);
+            try {
+                window.webkit.messageHandlers.nativeBridge.postMessage(message);
+                appendLog(`✓ 已发送`);
+            } catch (e) {
+                appendLog(`✗ 发送失败: ${e.message}`);
+            }
+        }
+
+        // ---------- 分组一：固定路由跳转 ----------
+        function navigateToNativeScreen() {
+            postBridgeMessage('navigate', 'webTestNativeScreen', {});
+        }
+
+        function presentSheet() {
+            postBridgeMessage('presentSheet', 'webTestNativeScreen', {});
+        }
+
+        function dismissCurrent() {
+            postBridgeMessage('dismiss', null, {});
+        }
+
+        // ---------- 分组二：系统能力调用 ----------
+        function openCamera() {
+            postBridgeMessage('openCamera', null, {});
+        }
+
+        function shareContent() {
+            postBridgeMessage('shareContent', null, {
+                text: '来自 WebTest 的分享'
+            });
+        }
+
+        function showAlert() {
+            postBridgeMessage('showAlert', null, {
+                title: '提示',
+                message: '这是一条来自 WebTest 的测试消息'
+            });
+        }
+
+        // ---------- 分组三：动态参数跳转 ----------
+        function navigateToProductDetail() {
+            const productId = document.getElementById('productIdInput').value.trim();
+            if (!productId) {
+                appendLog('✗ 请输入商品ID');
+                document.getElementById('productIdInput').focus();
+                return;
+            }
+            postBridgeMessage('navigate', 'productDetail', {
+                productId: productId
+            });
+        }
+
+        // ---------- 分组四：自定义函数调用 ----------
+        function callCustomFunction() {
+            const raw = document.getElementById('functionParamsInput').value.trim();
+            let params = {};
+            if (raw) {
+                try {
+                    params = JSON.parse(raw);
+                } catch (e) {
+                    appendLog('✗ JSON 格式错误，已发送空参数');
+                }
+            }
+            postBridgeMessage('callFunction', 'logEvent', params);
+        }
+    </script>
+</body>
+</html>

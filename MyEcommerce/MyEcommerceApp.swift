@@ -18,10 +18,18 @@ import DIAbstraction
 import Analytics
 import AnalyticsDomain
 
+import WebContainerDomain
+import WebContainerData
+import WebContainerAbstraction
+
+import WebContainerFeature
+
 enum Screen {
     case Products
-    
+
     case Basket
+
+    case webTest
 }
 
 final class TabRouter: ObservableObject {
@@ -60,6 +68,27 @@ struct MyEcommerceApp: App {
         DIContainer.registerAnalyticsWrapper()
         DIContainer.registerSendProductDetailAnalyticsDataUseCase()
 
+        DIContainer.registerWebContainerData()
+        DIContainer.registerLoadWebContentUseCase()
+        DIContainer.registerProcessBridgeCommandUseCase()
+
+        // WebTest Tab — WebContainer Feature DI 注册
+        DIContainer.shared.register(WebRouteFactoryProtocol.self) { _ in
+            AppWebRouteFactory()
+        }
+
+        DIContainer.shared.register(NativeBridgeRouter.self) { resolver in
+            NativeBridgeRouter(
+                navigationController: nil,
+                routeFactory: resolver.resolve(WebRouteFactoryProtocol.self)!
+            )
+        }.inObjectScope(.container)
+
+        DIContainer.shared.register(WebContainerViewModel.self) { resolver in
+            let router = resolver.resolve(NativeBridgeRouter.self)!
+            return WebContainerViewModel(bridgeRouter: router)
+        }
+
     }
     
     var body: some Scene {
@@ -71,19 +100,28 @@ struct MyEcommerceApp: App {
                     if let userId = loginViewModel.userID {
                         
                         TabView(selection: $tabRouter.screen) {
-                            
+
                             ProductListView(userId: userId)
                                 .tag(Screen.Products)
                                 .environmentObject(tabRouter)
                                 .tabItem {
                                     Label("Products", systemImage: "drop.halffull")
                                 }
-                            
+
                             BasketView(userId: userId)
                                 .tag(Screen.Basket)
                                 .tabItem {
                                     Label("Basket", systemImage: "cart.fill")
                                 }
+
+                            NavigationStack {
+                                WebTestEntryView()
+                                    .navigationTitle("WebTest")
+                            }
+                            .tag(Screen.webTest)
+                            .tabItem {
+                                Label("WebTest", systemImage: "globe")
+                            }
                         }
                         
                          
