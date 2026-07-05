@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// WebContainer 路由工厂协议。
 /// App 层（Composition Root）实现此协议，将路由名 + 参数解析为具体的 UIViewController。
@@ -9,5 +11,9 @@ public protocol WebRouteFactoryProtocol {
     ///   - route: 路由标识，如 "productDetail"、"webTestNativeScreen"
     ///   - params: 动态参数字典，如 ["productId": "42"]
     /// - Returns: 目标 ViewController，如果无法解析则返回 nil
+    #if canImport(UIKit)
     func makeViewController(route: String, params: [String: Any]) -> UIViewController?
+    #else
+    func makeViewController(route: String, params: [String: Any]) -> Any?
+    #endif
 }

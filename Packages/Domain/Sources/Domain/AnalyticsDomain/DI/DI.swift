@@ -17,4 +17,16 @@ extension DIContainer {
         }
 
     }
+
+    @MainActor
+    public static func registerTrackPageLifecycleUseCase() {
+
+        DIContainer.shared.register(TrackPageLifecycleUseCaseProtocol.self) { _ in
+
+            let wrapper = DIContainer.shared.resolve(AnalyticsWrapperProtocol.self)
+
+            return TrackPageLifecycleUseCase(analyticsWrapper: wrapper!)
+        }
+
+    }
 }

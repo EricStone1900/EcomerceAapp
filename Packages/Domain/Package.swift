@@ -23,6 +23,8 @@ enum DomainProduct: String, CaseIterable {
 
     case AnalyticsDomain
 
+    case RoutingDomain
+
     case WebContainerDomain
 
     // MARK: - Properties
@@ -67,6 +69,8 @@ enum AbstractionModule: String {
 
     case AnalyticsAbstraction
 
+    case RoutingAbstraction
+
     case WebContainerAbstraction
 
     var dependency: Target.Dependency {
@@ -103,6 +107,13 @@ enum AbstractionModule: String {
 
             .product(
                 name: "AnalyticsAbstraction",
+                package: "Abstraction"
+            )
+
+        case .RoutingAbstraction:
+
+            .product(
+                name: "RoutingAbstraction",
                 package: "Abstraction"
             )
 
@@ -172,6 +183,12 @@ extension DomainProduct {
                 .abstraction(.DIAbstraction)
             ]
 
+        case .RoutingDomain:
+            [
+                .abstraction(.RoutingAbstraction),
+                .abstraction(.DIAbstraction)
+            ]
+
         case .WebContainerDomain:
             [
                 .external(.RxSwift),
@@ -204,6 +221,13 @@ extension DomainProduct {
         case .AnalyticsDomain:
             [
                 .internal(.AnalyticsDomain),
+                .abstraction(.AnalyticsAbstraction),
+            ]
+
+        case .RoutingDomain:
+            [
+                .internal(.RoutingDomain),
+                .abstraction(.RoutingAbstraction),
             ]
 
         case .WebContainerDomain:

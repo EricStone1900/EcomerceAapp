@@ -18,7 +18,7 @@ public struct RouteBarVisibilityConfiguration {
 
     /// 全部使用 nil（不主动改变可见性）的默认实例。
     /// 等价于 `RouteBarVisibilityConfiguration()`。
-    public static let `default` = RouteBarVisibilityConfiguration()
+    @MainActor public static let `default` = RouteBarVisibilityConfiguration()
 
     // MARK: - Initialization
 

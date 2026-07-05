@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// 返回按钮配置。
 /// 控制导航栏返回按钮的显示行为和样式。
@@ -14,5 +16,7 @@ public enum RouteBackButtonConfiguration {
     /// - Parameters:
     ///   - title: 自定义按钮标题；传 nil 则不显示标题
     ///   - image: 自定义按钮图标；传 nil 则不显示图标
+    #if canImport(UIKit)
     case custom(title: String?, image: UIImage?)
+    #endif
 }

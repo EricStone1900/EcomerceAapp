@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// 路由工厂协议。
 /// 各业务模块在 App 层（Composition Root）实现此协议，
@@ -27,5 +29,9 @@ public protocol RouteFactoryProtocol {
     /// 根据路由生成目标 ViewController。
     /// - Parameter route: 目标路由
     /// - Returns: 目标 ViewController；无法解析时返回 nil
+    #if canImport(UIKit)
     func makeViewController(for route: AppRoute) -> UIViewController?
+    #else
+    func makeViewController(for route: AppRoute) -> Any?
+    #endif
 }

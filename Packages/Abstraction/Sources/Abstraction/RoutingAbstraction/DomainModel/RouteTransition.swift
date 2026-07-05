@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// 转场动画配置。
 /// 控制页面切换时的动画效果。
@@ -48,5 +50,10 @@ public enum RouteSystemTransition {
 /// - 需要特殊动画效果的营销落地页
 /// - 品牌定制化过渡动画
 /// - 双向交互式转场
+#if canImport(UIKit)
 public protocol RouteAnimatorProviding: UIViewControllerAnimatedTransitioning {
 }
+#else
+public protocol RouteAnimatorProviding {
+}
+#endif

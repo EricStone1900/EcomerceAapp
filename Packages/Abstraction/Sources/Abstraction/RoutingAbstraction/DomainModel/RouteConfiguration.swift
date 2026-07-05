@@ -42,7 +42,7 @@ public struct RouteConfiguration {
 
     /// 全部使用 nil（即系统默认值）的配置实例。
     /// 等价于 `RouteConfiguration()`。
-    public static let `default` = RouteConfiguration()
+    @MainActor public static let `default` = RouteConfiguration()
 
     // MARK: - Initialization
 

@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// 自定义导航栏标题视图提供协议。
 /// 当标准文本/富文本无法满足 UI 需求时，
@@ -13,5 +15,9 @@ public protocol RouteTitleViewProviding: AnyObject {
 
     /// 创建并返回自定义标题视图。
     /// - Returns: 将设置为导航栏 titleView 的 UIView
+    #if canImport(UIKit)
     func makeTitleView() -> UIView
+    #else
+    func makeTitleView() -> AnyObject
+    #endif
 }
