@@ -22,20 +22,23 @@ Do not build without approval — the project uses SPM packages that resolve via
 - **Open in Xcode**: `xed .`
 - **Build/run from terminal**: Use Xcode (⌘R) or `xcodebuild` for CI
 - **Run all tests for one package**: `cd Packages/{PackageName} && swift test` (e.g. `cd Packages/Domain && swift test`)
-- **Run a specific test**: `swift test --filter {TestTargetName}/{testMethod}` (e.g. `swift test --filter BasketDomainTests/testExample`)
+- **Run a specific test**: `swift test --filter {TestTargetName}/{testMethod}` (e.g. `swift test --filter RoutingDomainTests/testNavigateUseCaseForwardsRoute`)
 - **Build a single package**: `cd Packages/{PackageName} && swift build`
 
 ### Test Locations
 
 | Package | Test Target | Has Tests? |
 |---------|-------------|------------|
-| Abstraction/`{Feature}Abstraction` | `{Feature}AbstractionTests` | ✓ (except WebContainer) |
+| Abstraction/`{Feature}Abstraction` | `{Feature}AbstractionTests` | ✓ (except Routing, WebContainer) |
 | Domain/`{Feature}Domain` | `{Feature}DomainTests` | ✓ (except WebContainer) |
 | Data/`{Feature}Data` | `{Feature}DataTests` | ✓ (except WebContainer) |
 | Presentation/`{Feature}Feature` | `{Feature}FeatureTests` | ✓ (all features) |
 | Utilities/Networking (API) | APITests | ✓ |
 | Utilities/Utils | — | No tests |
 
+Routing (RoutingDomain) has 5 unit tests — use `swift test --filter RoutingDomainTests`.
+AnalyticsDomain (TrackPageLifecycleUseCase) has 7 unit tests — use `swift test --filter AnalyticsDomainTests`.
+RoutingData (RouteFactoryRegistry) has 2+ unit tests — use `swift test --filter RoutingDataTests`.
 WebContainer has no tests at any layer (Abstraction, Domain, Data skip them).
 
 ## Architecture Overview
@@ -54,11 +57,11 @@ Presentation/Features → Domain → Abstraction ← Data
 
 | Layer | What it contains | Depends on |
 |-------|-----------------|------------|
-| **Abstraction** | Protocols only (Repository, UseCase, DomainModel, DIContainer) | RxSwift, Swinject |
+| **Abstraction** | Protocols only (Repository, UseCase, DomainModel, DIContainer, Routing) | RxSwift, Swinject |
 | **Domain** | Use case implementations | Abstraction, RxSwift |
-| **Data** | Repository + Service implementations, DTOs | Abstraction, Networking, RxSwift |
-| **Presentation** | SwiftUI Views + ViewModels (ObservableObject) | Domain protocols, Abstraction, Utils |
-| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics | RxSwift, RxCocoa |
+| **Data** | Repository + Service implementations, DTOs, AppRouter | Abstraction, Networking, RxSwift |
+| **Presentation** | SwiftUI Views + ViewModels (ObservableObject), Route enums + factories | Domain protocols, Abstraction, Utils, PresentationCore |
+| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, PresentationCore | RxSwift, RxCocoa |
 
 ### Package Structure Pattern
 
@@ -118,7 +121,37 @@ extension DIContainer {
 ```
 
 All registrations happen eagerly in `MyEcommerceApp.init()` in dependency order:
-1. API Provider → 2. Services → 3. Repositories → 4. Use Cases → 5. Utilities → 6. App-level (routers, VMs)
+1. API Provider → 2. Services → 3. Repositories → 4. Use Cases → 5. Utilities → 6. **New Routing** → 7. App-level (legacy WebContainer)
+
+### Routing System Architecture
+
+The unified routing system spans multiple layers:
+
+**Abstraction (RoutingAbstraction):**
+- `AppRoute` — marker protocol for typed routes
+- `RouterProtocol` — `navigate(to:configuration:)` / `goBack(animated:)`
+- `RouteFactoryProtocol` — `canHandle(_:)` / `makeViewController(for:)`
+- `RouteConfiguration` — aggregates presentationStyle, transition, backButton, barVisibility, titleConfiguration
+- `RoutePresentationStyle` / `RouteModalStyle` — push vs present
+- `RouteTransition` / `RouteSystemTransition` / `RouteAnimatorProviding` — animation config
+- `RouteBackButtonConfiguration` / `RouteBarVisibilityConfiguration` / `RouteTitleConfiguration`
+- `PageLifecycleTrackable` — optional analytics protocol
+
+**Domain (RoutingDomain):**
+- `NavigateUseCase` — navigation orchestration with pre-check hooks
+
+**Data (RoutingData):**
+- `RouteFactoryRegistry` — aggregates RouteFactoryProtocol instances
+- `AppRouter` — implements RouterProtocol with push/present/metadata stack/transitions/bar visibility/title styling
+- `TransitioningCoordinator` — bridges custom animations to UIKit delegates
+
+**Utilities (PresentationCore):**
+- `BaseHostingController` — UIHostingController subclass with auto page-dwell-time analytics
+- `BaseNavigationController` — UINavigationController subclass with unified nav bar appearance
+
+**Presentation layer** — each feature has a `Route/` directory:
+- `{Feature}Route.swift` — route enum conforming to `AppRoute`
+- `{Feature}RouteFactory.swift` — factory conforming to `RouteFactoryProtocol`, creates `BaseHostingController`-wrapped views
 
 ### Navigation Flow
 
@@ -131,12 +164,13 @@ LoginView → .fullScreenCover (when isConnected)
 ```
 
 `TabRouter` (ObservableObject with `@Published var screen: Screen`) controls tab selection.
+The new `AppRouter` is registered and ready for programmatic navigation alongside the existing flow.
 
-### WebContainer Bridge (JS ↔ Native)
+### WebContainer Bridge (JS ↔ Native) — Legacy
 
 JS in web page sends `window.webkit.messageHandlers.nativeBridge.postMessage({action, target, params})` → WKWebView → `WebScriptMessageHandler` → JSON parsed into `WebBridgeCommand` → `ProcessBridgeCommandUseCase` matches against `WebBridgeRuleRepository` (7 pre-registered rules) → `NativeBridgeRouter.dispatch()` → `WebRouteFactoryProtocol.makeViewController(route)`.
 
-Route resolution is deferred to the App layer (`AppWebRouteFactory`), keeping WebContainer feature package independent.
+**Coexistence**: The legacy WebContainer bridge (`WebRouteFactoryProtocol` + `NativeBridgeRouter`) and the new routing system (`RouterProtocol` + `RouteFactoryProtocol`) are independently registered and non-interfering. The legacy path remains for WebView JS → Native navigation.
 
 ### Environment Switching
 
@@ -151,13 +185,13 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 
 ### Package Count
 
-10 `Package.swift` files producing 15+ SPM targets across ~70 source files.
+13 `Package.swift` files producing 20+ SPM targets across ~130 source files.
 
 ### Docs
 
 - `docs/architecture.md` — Detailed architecture documentation
-- `docs/plans/` — Implementation plans
-- `docs/specs/` — Feature specifications
+- `docs/plans/` — Implementation plans (8 stages)
+- `docs/specs/` — Feature specifications (8 stages)
 
 ## Common Development Tasks
 
@@ -168,8 +202,25 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 3. **Implement use cases** in `Packages/Domain/Sources/Domain/{Feature}Domain/` with a `DI/DIContainer+{Feature}Domain.swift` registration file
 4. **Implement data layer** in `Packages/Data/Sources/Data/{Feature}Data/` — DTO, Service, Repository, DI
 5. **Create SwiftUI feature** in `Packages/Presentation/{Feature}Feature/` — View + ViewModel (ObservableObject)
-6. **Wire DI** in `MyEcommerceApp.init()` — call the static `register*()` methods
-7. **Add tests** in each layer's `Tests/` directory
+6. **Add route definition** — `Route/{Feature}Route.swift` (conform to `AppRoute`)
+7. **Add route factory** — `Route/{Feature}RouteFactory.swift` (implement `RouteFactoryProtocol`, wrap in `BaseHostingController`)
+8. **Wire DI** in `MyEcommerceApp.init()` — call the static `register*()` methods
+9. **Register factory** — add to `DIContainer.registerAllFeatureRouteFactories()` in `AppRouteFactoryRegistrar.swift`
+10. **Add tests** in each layer's `Tests/` directory — note that RoutingData tests use Swift Testing framework (`import Testing`), matching the Domain layer pattern
+
+### Adding a New Route to an Existing Feature
+
+1. Add a new case to the feature's route enum (e.g., `ProductRoute.profile(userId:)`)
+2. Handle the new case in the feature's route factory's `makeViewController(for:)`, wrapping the view in `BaseHostingController`
+3. If the new route needs custom page analytics, make the view conform to `PageLifecycleTrackable`
+4. The factory is already registered in DI — no further wiring needed
+5. Call the navigation from any ViewModel:
+   ```swift
+   let router: RouterProtocol = DIContainer.shared.resolve()
+   var config = RouteConfiguration()
+   config.presentationStyle = .push
+   router.navigate(to: ProductRoute.profile(userId: userId), configuration: config)
+   ```
 
 ### DI Registration Order (in MyEcommerceApp.init)
 
@@ -179,9 +230,23 @@ DIContainer.register{Feature}Service()
 DIContainer.register{Feature}Repository()
 DIContainer.register{Feature}UseCase()
 DIContainer.registerAnalyticsWrapper()
-DIContainer.register...()
-// App-level singletons (routers, factories)
-DIContainer.shared.register(...) { ... }
+DIContainer.registerSendProductDetailAnalyticsDataUseCase()
+DIContainer.registerTrackPageLifecycleUseCase()
+
+// New routing system
+DIContainer.registerRouteFactoryRegistry()
+DIContainer.registerAppRouter()
+DIContainer.registerNavigateUseCase()
+DIContainer.registerPresentationCore()
+DIContainer.registerAllFeatureRouteFactories()
+
+// Legacy WebContainer
+DIContainer.registerWebContainerData()
+DIContainer.registerLoadWebContentUseCase()
+DIContainer.registerProcessBridgeCommandUseCase()
+DIContainer.shared.register(WebRouteFactoryProtocol.self) { ... }
+DIContainer.shared.register(NativeBridgeRouter.self) { ... }
+DIContainer.shared.register(WebContainerViewModel.self) { ... }
 ```
 
 ### Navigation State

@@ -1,7 +1,7 @@
 import XCTest
-@testable import Data
+@testable import BasketData
 
-final class DataTests: XCTestCase {
+final class BasketDataTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

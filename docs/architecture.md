@@ -24,7 +24,9 @@ MyEcommerceAppDemo/
 │   │       ├── BasketAbstraction/        #   购物车域协议：同上
 │   │       ├── UserAbstraction/          #   用户域协议：同上
 │   │       ├── AnalyticsAbstraction/     #   分析域协议：事件上报用例协议
-│   │       └── DIAbstraction/            #   DI 容器（Swinject Container 单例封装）
+│   │       ├── DIAbstraction/            #   DI 容器（Swinject Container 单例封装）
+│   │       ├── RoutingAbstraction/       #   路由域协议：AppRoute、RouterProtocol、RouteConfiguration
+│   │       └── WebContainerAbstraction/  #   WebView 桥接协议
 │   │
 │   ├── Domain/                           # 【业务逻辑层】UseCase 实现
 │   │   ├── Package.swift
@@ -32,23 +34,30 @@ MyEcommerceAppDemo/
 │   │       ├── ProductDomain/            #   商品用例：GetProductsUseCase
 │   │       ├── BasketDomain/             #   购物车用例：AddProduct / GetBasket
 │   │       ├── UserDomain/               #   用户用例：LoginUserUseCase
-│   │       ├── AnalyticsDomain/          #   分析用例：SendProductDetailAnalyticsData
+│   │       ├── AnalyticsDomain/          #   分析用例：SendProductDetailAnalyticsData、TrackPageLifecycleUseCase
+│   │       ├── RoutingDomain/            #   路由用例：NavigateUseCase（跳转编排 + 前置校验）
 │   │       └── 各模块含 DI/ 目录 → 向容器注册 UseCase
 │   │
-│   ├── Data/                             # 【数据层】Repository + Service 实现
+│   ├── Data/                             # 【数据层】Repository + Service + Router 实现
 │   │   ├── Package.swift
 │   │   └── Sources/Data/
 │   │       ├── ProductData/              #   商品 Repository → ProductService → API
 │   │       ├── BasketData/               #   购物车 Repository → BasketService → API
 │   │       ├── UserData/                 #   用户 Repository → UserService → API
+│   │       ├── RoutingData/              #   路由实现：AppRouter、RouteFactoryRegistry、TransitioningCoordinator
 │   │       └── 每模块含 DTO/、DomainModel/、DI/ 目录
 │   │
 │   ├── Presentation/                     # 【表示层】SwiftUI Feature 包
 │   │   ├── LoginFeature/                 #   登录模块：LoginView + LoginViewModel
+│   │   │   └── Route/                    #     LoginRoute + LoginRouteFactory
 │   │   ├── ProductsFeature/              #   商品列表 + 详情模块
 │   │   │   ├── ProductList/              #     商品列表页
-│   │   │   └── ItemDetail/               #     商品详情页
-│   │   └── BasketFeature/                #   购物车模块：BasketView + BasketViewModel
+│   │   │   ├── ItemDetail/               #     商品详情页
+│   │   │   └── Route/                    #     ProductRoute + ProductRouteFactory
+│   │   ├── BasketFeature/                #   购物车模块：BasketView + BasketViewModel
+│   │   │   └── Route/                    #     BasketRoute + BasketRouteFactory
+│   │   └── WebContainerFeature/          #   WebView 容器模块
+│   │       └── Route/                    #     WebContainerRoute + WebContainerRouteFactory
 │   │
 │   └── Utilities/                        # 【工具层】复用基础组件
 │       ├── Networking/                   #   网络层（URLSession + RxSwift）
@@ -61,13 +70,16 @@ MyEcommerceAppDemo/
 │       │       ├── Environment/          #     开发/生产环境切换
 │       │       └── Mock/                 #     Mock APIProvider + 数据工厂
 │       ├── Utils/                        #   工具：RxObservable → Combine Publisher 桥接
-│       └── Analytics/                    #   简易分析封装（打印事件）
+│       ├── Analytics/                    #   简易分析封装（打印事件）
+│       └── PresentationCore/             #   路由 UI 基类：BaseHostingController、BaseNavigationController
 │
 ├── docs/
 │   ├── architecture.md                   #   本文件 — 项目架构文档
 │   └── plans/                            #   各次执行计划文档
 │       ├── analytics-api-endpoint-plan.md
-│       └── dev-prd-environment-switching-plan.md
+│       ├── dev-prd-environment-switching-plan.md
+│       ├── stage9_tests_and_docs_plan.md
+│       └── ...（共 8 份 stage 计划）
 │
 ├── .claude/                              # Claude Code 配置
 │   ├── settings.json
@@ -97,6 +109,7 @@ Presentation/Features  →  Domain  →  Abstraction  ←  Data
 | **Utilities/Networking** | RxSwift + RxCocoa |
 | **Utilities/Utils** | RxSwift + Combine |
 | **Utilities/Analytics** | 无 |
+| **Utilities/PresentationCore** | RoutingAbstraction, AnalyticsAbstraction, DIAbstraction, Swinject |
 
 ---
 
@@ -112,7 +125,7 @@ View  →  ViewModel (ObservableObject)
 - 所有响应式链使用 **RxSwift Observable** 在 Domain / Data 层传递
 - ViewModel 层通过 `Utils` 的 `Observable.asPublisher()` 桥接为 **Combine Publisher**
 - ViewModel 再用 `assign(to: \.published, on: self)` 驱动 `@Published` 属性
-- 路由：LoginView → TabView(Products / Basket)，由 `TabRouter` (ObservableObject) 控制
+- 路由：LoginView → TabView(Products / Basket / WebTest)，由 `TabRouter` 控制；新路由系统通过 `RouterProtocol.navigate(to:configuration:)` 驱动跳转
 
 ---
 

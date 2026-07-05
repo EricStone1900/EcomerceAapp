@@ -39,6 +39,78 @@ struct TestRoute: AppRoute {
 
 // MARK: - Tests
 
+@Test("NavigateUseCase passes through all configuration properties")
+@MainActor
+func testNavigateUseCaseAllConfigurationProperties() {
+
+    let mockRouter = MockRouter()
+    let useCase = NavigateUseCase(router: mockRouter)
+    let route = TestRoute(id: "full_config")
+    var config = RouteConfiguration()
+    config.presentationStyle = .push
+    config.transition = .system(.slideLeft)
+    config.backButton = .hidden
+    var barVisibility = RouteBarVisibilityConfiguration()
+    barVisibility.hidesNavigationBar = true
+    barVisibility.hidesTabBar = true
+    barVisibility.animated = false
+    config.barVisibility = barVisibility
+    config.titleConfiguration = .text("Custom Title")
+
+    useCase.execute(route: route, configuration: config)
+
+    #expect(mockRouter.navigatedRoute is TestRoute)
+    #expect(mockRouter.navigatedConfiguration?.presentationStyle != nil)
+    #expect(mockRouter.navigatedConfiguration?.transition != nil)
+    #expect(mockRouter.navigatedConfiguration?.backButton != nil)
+    #expect(mockRouter.navigatedConfiguration?.barVisibility != nil)
+    #expect(mockRouter.navigatedConfiguration?.titleConfiguration != nil)
+
+    if case .push = mockRouter.navigatedConfiguration?.presentationStyle {
+        #expect(Bool(true))
+    } else {
+        #expect(Bool(false), "Expected presentation style to be .push")
+    }
+    if case .system(.slideLeft) = mockRouter.navigatedConfiguration?.transition {
+        #expect(Bool(true))
+    } else {
+        #expect(Bool(false), "Expected transition to be .system(.slideLeft)")
+    }
+}
+
+@Test("NavigateUseCase handles multiple navigate calls sequentially")
+@MainActor
+func testNavigateUseCaseMultipleNavigateCalls() {
+
+    let mockRouter = MockRouter()
+    let useCase = NavigateUseCase(router: mockRouter)
+
+    let route1 = TestRoute(id: "first")
+    let config1 = RouteConfiguration()
+
+    let route2 = TestRoute(id: "second")
+    var config2 = RouteConfiguration()
+    config2.presentationStyle = .present(modal: .fullScreen)
+
+    useCase.execute(route: route1, configuration: config1)
+    #expect(mockRouter.navigatedConfiguration?.presentationStyle == nil)
+
+    useCase.execute(route: route2, configuration: config2)
+    #expect(mockRouter.navigatedRoute is TestRoute)
+
+    if let lastRoute = mockRouter.navigatedRoute as? TestRoute {
+        #expect(lastRoute.id == "second")
+    } else {
+        #expect(Bool(false), "Expected navigatedRoute to be TestRoute with id 'second'")
+    }
+    #expect(mockRouter.navigatedConfiguration?.presentationStyle != nil)
+    if case .present(modal: .fullScreen) = mockRouter.navigatedConfiguration?.presentationStyle {
+        #expect(Bool(true))
+    } else {
+        #expect(Bool(false), "Expected presentation style to be .present(modal: .fullScreen)")
+    }
+}
+
 @Test("NavigateUseCase forwards route and configuration to RouterProtocol")
 @MainActor
 func testNavigateUseCaseForwardsRoute() {

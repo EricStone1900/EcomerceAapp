@@ -147,8 +147,7 @@ extension DataProduct {
 
     var testsTargets: [Target] {
         switch self {
-        case .WebContainerData,
-                .RoutingData:
+        case .WebContainerData:
             return []
 
         default:
