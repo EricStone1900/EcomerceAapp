@@ -6,4 +6,8 @@
 public protocol UIViewControllerAnimatedTransitioning {}
 open class UIViewController {}
 open class UIView {}
+
+// Stage 5 转场协调器所需的协议桩
+public protocol UINavigationControllerDelegate {}
+public protocol UIViewControllerTransitioningDelegate {}
 #endif
