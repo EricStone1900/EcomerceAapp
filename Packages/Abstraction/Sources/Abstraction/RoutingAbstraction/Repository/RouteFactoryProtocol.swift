@@ -19,6 +19,7 @@ import UIKit
 ///     }
 /// }
 /// ```
+@MainActor
 public protocol RouteFactoryProtocol {
 
     /// 判断当前工厂是否能处理该路由。

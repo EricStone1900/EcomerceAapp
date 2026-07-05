@@ -11,7 +11,8 @@ let package = Package(
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
         .package(path: "../Abstraction"),
         .package(path: "../Domain"),
-        .package(path: "../Utilities/Utils")
+        .package(path: "../Utilities/Utils"),
+        .package(path: "../Utilities/PresentationCore"),
     ],
     targets: WebContainerFeatureProduct.allCases.map(\.target) + WebContainerFeatureProduct.allCases.flatMap(\.testsTargets)
 )
@@ -65,6 +66,8 @@ enum AbstractionModule: String {
 
     case DIAbstraction
 
+    case RoutingAbstraction
+
     var dependency: Target.Dependency {
 
         return switch self {
@@ -80,6 +83,13 @@ enum AbstractionModule: String {
 
             .product(
                 name: "DIAbstraction",
+                package: "Abstraction"
+            )
+
+        case .RoutingAbstraction:
+
+            .product(
+                name: "RoutingAbstraction",
                 package: "Abstraction"
             )
         }
@@ -108,6 +118,8 @@ enum Utility: String {
 
     case Utils
 
+    case PresentationCore
+
     var dependency: Target.Dependency {
 
         return switch self {
@@ -117,6 +129,13 @@ enum Utility: String {
             .product(
                 name: "Utils",
                 package: "Utils"
+            )
+
+        case .PresentationCore:
+
+            .product(
+                name: "PresentationCore",
+                package: "PresentationCore"
             )
         }
     }
@@ -128,7 +147,6 @@ extension WebContainerFeatureProduct {
         .target(
             framework: self,
             dependencies: dependencies,
-//            resources: [.copy("Resources")],
             resources: [.process("Resources")],
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         )
@@ -147,8 +165,10 @@ extension WebContainerFeatureProduct {
                 .external(.Swinject),
                 .abstraction(.WebContainerAbstraction),
                 .abstraction(.DIAbstraction),
+                .abstraction(.RoutingAbstraction),
                 .domain(.WebContainerDomain),
                 .utility(.Utils),
+                .utility(.PresentationCore),
             ]
         }
 
@@ -213,6 +233,7 @@ extension Target {
         exclude: [String] = [],
         sources: [String]? = nil,
         resources: [Resource]? = nil,
+        publicHeadersPath: String? = nil,
         cSettings: [CSetting]? = nil,
         cxxSettings: [CXXSetting]? = nil,
         swiftSettings: [SwiftSetting]? = nil,

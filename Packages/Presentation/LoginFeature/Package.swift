@@ -10,14 +10,15 @@ let package = Package(
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
         .package(path: "../Abstraction"),
-        .package(path: "../Utilities/Utils")
+        .package(path: "../Utilities/Utils"),
+        .package(path: "../Utilities/PresentationCore"),
 
     ],
     targets: LoginFeature.allCases.map(\.target) + LoginFeature.allCases.flatMap(\.testsTargets)
 )
 
 enum LoginFeature: String, CaseIterable {
-    
+
     case LoginFeature
 
     // MARK: - Properties
@@ -29,28 +30,28 @@ enum LoginFeature: String, CaseIterable {
     var testsName: String { "\(rawValue)Tests" }
 
     var product: Product { Product.Library.library(product: self) }
-    
+
 }
 
 enum ExternalModule: String {
-    
+
     case Swinject
-    
+
     case RxSwift
 
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .Swinject:
-            
+
             .product(
                 name: "Swinject",
                 package: "Swinject"
             )
-            
+
         case .RxSwift:
-            
+
             .product(
                 name: "RxSwift",
                 package: "RxSwift"
@@ -60,18 +61,19 @@ enum ExternalModule: String {
 }
 
 enum AbstractionModule: String {
-    
+
     case UserAbstraction
 
     case DIAbstraction
 
+    case RoutingAbstraction
 
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .UserAbstraction:
-            
+
             .product(
                 name: "UserAbstraction",
                 package: "Abstraction"
@@ -83,30 +85,46 @@ enum AbstractionModule: String {
                 name: "DIAbstraction",
                 package: "Abstraction"
             )
+
+        case .RoutingAbstraction:
+
+            .product(
+                name: "RoutingAbstraction",
+                package: "Abstraction"
+            )
         }
     }
 }
 
 enum Utility: String {
-    
+
     case Utils
-    
+
+    case PresentationCore
+
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .Utils:
-            
+
             .product(
                 name: "Utils",
                 package: "Utils"
+            )
+
+        case .PresentationCore:
+
+            .product(
+                name: "PresentationCore",
+                package: "PresentationCore"
             )
         }
     }
 }
 
 extension LoginFeature {
-    
+
     var target: Target {
         .target(
             framework: self,
@@ -114,7 +132,7 @@ extension LoginFeature {
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         )
     }
-    
+
     var testsTargets: [Target] {
         [
             .testTarget(
@@ -123,26 +141,28 @@ extension LoginFeature {
             )
         ]
     }
-    
+
     var dependencies: [Target.Dependency] {
         return switch self {
-            
+
         case .LoginFeature:
             [
                 .external(.RxSwift),
                 .external(.Swinject),
                 .abstraction(.UserAbstraction),
                 .abstraction(.DIAbstraction),
-                .utility(.Utils)
+                .abstraction(.RoutingAbstraction),
+                .utility(.Utils),
+                .utility(.PresentationCore),
             ]
         }
-            
+
     }
-    
+
     var testsDependencies: [Target.Dependency] {
 
         switch self {
-            
+
         case .LoginFeature:
             [
                 .internal(.LoginFeature)
@@ -152,7 +172,7 @@ extension LoginFeature {
 }
 
 extension Product.Library {
-    
+
     static func library(product: LoginFeature) -> Product {
         .library(
             name: product.rawValue,
@@ -163,7 +183,7 @@ extension Product.Library {
 }
 
 extension Target {
-    
+
     static func target(
         framework: LoginFeature,
         dependencies: [Target.Dependency] = [],
@@ -191,19 +211,20 @@ extension Target {
             linkerSettings: linkerSettings
         )
     }
-    
+
     static func testTarget(
         framework: LoginFeature,
         dependencies: [Target.Dependency] = [],
         exclude: [String] = [],
         sources: [String]? = nil,
         resources: [Resource]? = nil,
+        publicHeadersPath: String? = nil,
         cSettings: [CSetting]? = nil,
         cxxSettings: [CXXSetting]? = nil,
         swiftSettings: [SwiftSetting]? = nil,
         linkerSettings: [LinkerSetting]? = nil
     ) -> Target {
-        
+
         .testTarget(
             name: framework.testsName,
             dependencies: dependencies,
@@ -225,23 +246,22 @@ extension Target.Dependency {
 
         Target.Dependency(stringLiteral: product.rawValue)
     }
-    
+
     static func external(_ module: ExternalModule) -> Target.Dependency {
 
         module.dependency
-        
+
     }
-    
+
     static func abstraction(_ module: AbstractionModule) -> Target.Dependency {
 
         module.dependency
-        
+
     }
-    
+
     static func utility(_ module: Utility) -> Target.Dependency {
 
         module.dependency
-        
+
     }
 }
-

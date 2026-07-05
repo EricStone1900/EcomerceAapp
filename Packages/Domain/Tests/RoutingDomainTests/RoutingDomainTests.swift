@@ -6,6 +6,7 @@ import RoutingAbstraction
 
 // MARK: - Mock
 
+@MainActor
 final class MockRouter: RouterProtocol {
 
     var navigatedRoute: AppRoute?
@@ -39,6 +40,7 @@ struct TestRoute: AppRoute {
 // MARK: - Tests
 
 @Test("NavigateUseCase forwards route and configuration to RouterProtocol")
+@MainActor
 func testNavigateUseCaseForwardsRoute() {
 
     let mockRouter = MockRouter()
@@ -53,6 +55,7 @@ func testNavigateUseCaseForwardsRoute() {
 }
 
 @Test("NavigateUseCase uses default configuration when .default is passed")
+@MainActor
 func testNavigateUseCaseDefaultConfig() {
 
     let mockRouter = MockRouter()
@@ -67,6 +70,7 @@ func testNavigateUseCaseDefaultConfig() {
 }
 
 @Test("NavigateUseCase passes through custom presentation style")
+@MainActor
 func testNavigateUseCaseCustomPresentation() {
 
     let mockRouter = MockRouter()

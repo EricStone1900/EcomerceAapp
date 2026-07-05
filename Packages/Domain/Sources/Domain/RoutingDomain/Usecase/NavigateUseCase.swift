@@ -6,6 +6,7 @@ import DIAbstraction
 
 /// 跳转编排 UseCase 协议。
 /// 接收目标路由和配置，经前置校验后通过 RouterProtocol 执行跳转。
+@MainActor
 public protocol NavigateUseCaseProtocol {
 
     /// 执行跳转。
@@ -25,6 +26,7 @@ public protocol NavigateUseCaseProtocol {
 /// let useCase: NavigateUseCaseProtocol = DIContainer.shared.resolve(...)
 /// useCase.execute(route: MyRoute.detail(id: "42"), configuration: .default)
 /// ```
+@MainActor
 public final class NavigateUseCase: NavigateUseCaseProtocol {
 
     private let router: RouterProtocol

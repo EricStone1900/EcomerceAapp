@@ -24,6 +24,10 @@ import WebContainerAbstraction
 
 import WebContainerFeature
 
+import RoutingDomain
+import RoutingData
+import PresentationCore
+
 enum Screen {
     case Products
 
@@ -67,6 +71,14 @@ struct MyEcommerceApp: App {
 
         DIContainer.registerAnalyticsWrapper()
         DIContainer.registerSendProductDetailAnalyticsDataUseCase()
+        DIContainer.registerTrackPageLifecycleUseCase()
+
+        // 新路由系统 DI 注册
+        DIContainer.registerRouteFactoryRegistry()
+        DIContainer.registerAppRouter()
+        DIContainer.registerNavigateUseCase()
+        DIContainer.registerPresentationCore()
+        DIContainer.registerAllFeatureRouteFactories()
 
         DIContainer.registerWebContainerData()
         DIContainer.registerLoadWebContentUseCase()

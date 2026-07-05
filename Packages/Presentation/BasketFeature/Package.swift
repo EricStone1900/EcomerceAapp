@@ -11,13 +11,14 @@ let package = Package(
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
         .package(path: "../Abstraction"),
         .package(path: "../Utilities/Utils"),
+        .package(path: "../Utilities/PresentationCore"),
 
     ],
     targets: BasketFeature.allCases.map(\.target) + BasketFeature.allCases.flatMap(\.testsTargets)
 )
 
 enum BasketFeature: String, CaseIterable {
-    
+
     case BasketFeature
 
     // MARK: - Properties
@@ -29,28 +30,28 @@ enum BasketFeature: String, CaseIterable {
     var testsName: String { "\(rawValue)Tests" }
 
     var product: Product { Product.Library.library(product: self) }
-    
+
 }
 
 enum ExternalModule: String {
-    
+
     case Swinject
-    
+
     case RxSwift
 
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .Swinject:
-            
+
             .product(
                 name: "Swinject",
                 package: "Swinject"
             )
-            
+
         case .RxSwift:
-            
+
             .product(
                 name: "RxSwift",
                 package: "RxSwift"
@@ -60,17 +61,26 @@ enum ExternalModule: String {
 }
 
 enum AbstractionModule: String {
-    
+
     case BasketAbstraction
-    
+
+    case RoutingAbstraction
+
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .BasketAbstraction:
-            
+
             .product(
                 name: "BasketAbstraction",
+                package: "Abstraction"
+            )
+
+        case .RoutingAbstraction:
+
+            .product(
+                name: "RoutingAbstraction",
                 package: "Abstraction"
             )
         }
@@ -78,25 +88,34 @@ enum AbstractionModule: String {
 }
 
 enum Utility: String {
-    
+
     case Utils
-    
+
+    case PresentationCore
+
     var dependency: Target.Dependency {
-        
+
         return switch self {
-            
+
         case .Utils:
-            
+
             .product(
                 name: "Utils",
                 package: "Utils"
+            )
+
+        case .PresentationCore:
+
+            .product(
+                name: "PresentationCore",
+                package: "PresentationCore"
             )
         }
     }
 }
 
 extension BasketFeature {
-    
+
     var target: Target {
         .target(
             framework: self,
@@ -104,7 +123,7 @@ extension BasketFeature {
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         )
     }
-    
+
     var testsTargets: [Target] {
         [
             .testTarget(
@@ -113,25 +132,27 @@ extension BasketFeature {
             )
         ]
     }
-    
+
     var dependencies: [Target.Dependency] {
         return switch self {
-            
+
         case .BasketFeature:
             [
                 .external(.RxSwift),
                 .external(.Swinject),
                 .abstraction(.BasketAbstraction),
-                .utility(.Utils)
+                .abstraction(.RoutingAbstraction),
+                .utility(.Utils),
+                .utility(.PresentationCore),
             ]
         }
-            
+
     }
-    
+
     var testsDependencies: [Target.Dependency] {
 
         switch self {
-            
+
         case .BasketFeature:
             [
                 .internal(.BasketFeature)
@@ -141,7 +162,7 @@ extension BasketFeature {
 }
 
 extension Product.Library {
-    
+
     static func library(product: BasketFeature) -> Product {
         .library(
             name: product.rawValue,
@@ -152,7 +173,7 @@ extension Product.Library {
 }
 
 extension Target {
-    
+
     static func target(
         framework: BasketFeature,
         dependencies: [Target.Dependency] = [],
@@ -180,19 +201,20 @@ extension Target {
             linkerSettings: linkerSettings
         )
     }
-    
+
     static func testTarget(
         framework: BasketFeature,
         dependencies: [Target.Dependency] = [],
         exclude: [String] = [],
         sources: [String]? = nil,
         resources: [Resource]? = nil,
+        publicHeadersPath: String? = nil,
         cSettings: [CSetting]? = nil,
         cxxSettings: [CXXSetting]? = nil,
         swiftSettings: [SwiftSetting]? = nil,
         linkerSettings: [LinkerSetting]? = nil
     ) -> Target {
-        
+
         .testTarget(
             name: framework.testsName,
             dependencies: dependencies,
@@ -214,23 +236,22 @@ extension Target.Dependency {
 
         Target.Dependency(stringLiteral: product.rawValue)
     }
-    
+
     static func external(_ module: ExternalModule) -> Target.Dependency {
 
         module.dependency
-        
+
     }
-    
+
     static func abstraction(_ module: AbstractionModule) -> Target.Dependency {
 
         module.dependency
-        
+
     }
-    
+
     static func utility(_ module: Utility) -> Target.Dependency {
 
         module.dependency
-        
+
     }
 }
-

@@ -13,6 +13,7 @@ import Foundation
 /// let router: RouterProtocol = AppRouter(navigationController: nav)
 /// router.navigate(to: ProductDetailRoute(productId: "42"), configuration: .default)
 /// ```
+@MainActor
 public protocol RouterProtocol {
 
     /// 导航到指定路由。

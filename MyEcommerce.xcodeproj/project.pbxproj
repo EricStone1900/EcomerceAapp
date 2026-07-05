@@ -29,6 +29,9 @@
 		5807AA8B2FF36CBF00073536 /* WebContainerData in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8A2FF36CBF00073536 /* WebContainerData */; };
 		5807AA8D2FF36CBF00073536 /* WebContainerDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8C2FF36CBF00073536 /* WebContainerDomain */; };
 		5807AA8F2FF36CBF00073536 /* WebContainerFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 5807AA8E2FF36CBF00073536 /* WebContainerFeature */; };
+		58D562DC2FFA7DAF00014B49 /* RoutingDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DB2FFA7DAF00014B49 /* RoutingDomain */; };
+		58D562DE2FFA7DB900014B49 /* RoutingData in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DD2FFA7DB900014B49 /* RoutingData */; };
+		58D562E02FFA7DD300014B49 /* RoutingAbstraction in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DF2FFA7DD300014B49 /* RoutingAbstraction */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,7 +110,10 @@
 				38CD37A32CC2959F009D657A /* BasketDomain in Frameworks */,
 				38CD379F2CC29598009D657A /* ProductAbstraction in Frameworks */,
 				5807AA892FF36CBF00073536 /* WebContainerAbstraction in Frameworks */,
+				58D562E02FFA7DD300014B49 /* RoutingAbstraction in Frameworks */,
+				58D562DC2FFA7DAF00014B49 /* RoutingDomain in Frameworks */,
 				38F690BF2E58E51D009220B0 /* BasketData in Frameworks */,
+				58D562DE2FFA7DB900014B49 /* RoutingData in Frameworks */,
 				38461F632E5A412F0048247E /* AnalyticsAbstraction in Frameworks */,
 				38461F652E5A44F60048247E /* AnalyticsDomain in Frameworks */,
 			);
@@ -234,6 +240,9 @@
 				5807AA882FF36CBF00073536 /* WebContainerAbstraction */,
 				5807AA8A2FF36CBF00073536 /* WebContainerData */,
 				5807AA8C2FF36CBF00073536 /* WebContainerDomain */,
+				58D562DB2FFA7DAF00014B49 /* RoutingDomain */,
+				58D562DD2FFA7DB900014B49 /* RoutingData */,
+				58D562DF2FFA7DD300014B49 /* RoutingAbstraction */,
 			);
 			productName = MyEcommerce;
 			productReference = 38E8178B2CB84D6500086B2A /* MyEcommerce.app */;
@@ -783,6 +792,18 @@
 		5807AA8E2FF36CBF00073536 /* WebContainerFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WebContainerFeature;
+		};
+		58D562DB2FFA7DAF00014B49 /* RoutingDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RoutingDomain;
+		};
+		58D562DD2FFA7DB900014B49 /* RoutingData */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RoutingData;
+		};
+		58D562DF2FFA7DD300014B49 /* RoutingAbstraction */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RoutingAbstraction;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

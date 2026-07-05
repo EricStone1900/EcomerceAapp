@@ -26,6 +26,7 @@ public final class RouteFactoryRegistry {
     /// 遍历所有已注册工厂，找到第一个能处理该路由的工厂并创建 ViewController。
     /// - Parameter route: 目标路由
     /// - Returns: 目标 ViewController；无可处理工厂时返回 nil
+    @MainActor
     public func viewController(for route: AppRoute) -> UIViewController? {
 
         for factory in factories where factory.canHandle(route) {

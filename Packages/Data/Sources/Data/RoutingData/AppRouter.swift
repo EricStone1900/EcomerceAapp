@@ -16,6 +16,7 @@ import UIKit
 /// - 应用 RouteBackButtonConfiguration
 ///
 /// 对 UINavigationController / UITabBarController 使用弱引用，避免循环引用。
+@MainActor
 public final class AppRouter: RouterProtocol {
 
     private weak var navigationController: UINavigationController?
@@ -67,8 +68,6 @@ public final class AppRouter: RouterProtocol {
         let style = configuration.presentationStyle ?? .push
         applyBarVisibilityIfNeeded(configuration.barVisibility, for: viewController, isPush: style.isPush)
         applyTitleIfNeeded(configuration.titleConfiguration, to: viewController)
-
-        let style = configuration.presentationStyle ?? .push
 
         switch style {
         case .push:
