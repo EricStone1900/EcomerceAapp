@@ -4,6 +4,7 @@ import SwiftUI
 import DIAbstraction
 import WebContainerAbstraction
 import WebContainerFeature
+import ProductsFeature
 
 /// App 层的 WebContainer 路由工厂。
 /// 作为 Composition Root，将路由名 + 参数解析为具体的 ViewController/View。
@@ -12,6 +13,8 @@ final class AppWebRouteFactory: WebRouteFactoryProtocol {
 
     func makeViewController(route: String, params: [String: Any]) -> UIViewController? {
         switch route {
+        case "productList":
+            return UIHostingController(rootView: ProductListView(userId: UUID()))
         case "webTestNativeScreen":
             return UIHostingController(rootView: WebTestNativeProbeView())
         case "productDetail":

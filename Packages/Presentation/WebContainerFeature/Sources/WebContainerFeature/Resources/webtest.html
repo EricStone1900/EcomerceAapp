@@ -19,8 +19,19 @@
             <span class="badge">无参数</span>
         </div>
         <div class="card-body">
+            <p class="field-label">VC 名称</p>
+            <input
+                type="text"
+                id="routeNameInput"
+                class="input input-mono"
+                placeholder="输入VC名称，如 productList"
+                autocomplete="off"
+            />
+            <button class="btn btn-accent" onclick="navigateToDynamicRoute()">
+                跳转指定VC
+            </button>
             <button class="btn btn-primary" onclick="navigateToNativeScreen()">
-                跳转原生测试页
+                跳转商品列表
             </button>
             <button class="btn btn-secondary" onclick="presentSheet()">
                 弹出 Sheet
@@ -141,8 +152,19 @@
         }
 
         // ---------- 分组一：固定路由跳转 ----------
+        function navigateToDynamicRoute() {
+            const routeName = document.getElementById('routeNameInput').value.trim();
+            if (!routeName) {
+                appendLog('✗ 请输入VC名称');
+                document.getElementById('routeNameInput').focus();
+                return;
+            }
+            appendLog(`→ 尝试动态跳转 VC: ${routeName}`);
+            postBridgeMessage('navigate', routeName, {});
+        }
+
         function navigateToNativeScreen() {
-            postBridgeMessage('navigate', 'webTestNativeScreen', {});
+            postBridgeMessage('navigate', 'productList', {});
         }
 
         function presentSheet() {

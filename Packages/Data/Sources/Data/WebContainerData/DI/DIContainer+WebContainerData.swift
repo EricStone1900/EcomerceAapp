@@ -34,9 +34,17 @@ extension DIContainer {
             WebBridgeRule(
                 handlerName: "nativeBridge",
                 action: "navigate",
-                target: "webTestNativeScreen",
-                nativeAction: .pushRoute(route: "webTestNativeScreen", params: [:]),
+                target: "productList",
+                nativeAction: .pushRoute(route: "productList", params: [:]),
                 priority: 10
+            ),
+            // 通配规则：未知 route 名称走 routeFactory 尝试创建，创建失败由 router 弹警告
+            WebBridgeRule(
+                handlerName: "nativeBridge",
+                action: "navigate",
+                target: nil,
+                nativeAction: .pushRoute(route: "", params: [:]),
+                priority: 1
             ),
             WebBridgeRule(
                 handlerName: "nativeBridge",

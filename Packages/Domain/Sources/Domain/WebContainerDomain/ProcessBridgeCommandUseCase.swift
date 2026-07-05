@@ -31,12 +31,15 @@ public final class ProcessBridgeCommandUseCase: ProcessBridgeCommandUseCaseProto
 
     /// 将运行时 `command.params` 合并进规则匹配的 `NativeBridgeAction`，
     /// 确保动态参数（如 productId）能正确传递，而非使用规则的静态占位参数。
+    /// 通配规则（rule.target == nil）时使用 command.target 作为实际路由名。
     private func mergeParams(rule: WebBridgeRule, command: WebBridgeCommand) -> NativeBridgeAction {
         switch rule.nativeAction {
         case .pushRoute(let route, _):
-            return .pushRoute(route: route, params: command.params)
+            let actualRoute = rule.target == nil ? (command.target ?? route) : route
+            return .pushRoute(route: actualRoute, params: command.params)
         case .presentSheet(let route, _):
-            return .presentSheet(route: route, params: command.params)
+            let actualRoute = rule.target == nil ? (command.target ?? route) : route
+            return .presentSheet(route: actualRoute, params: command.params)
         case .callFunction(let name, _):
             return .callFunction(name: name, params: command.params)
         default:

@@ -58,7 +58,8 @@ This project follows **Clean Architecture** with strict dependency inversion: **
 - **Product Browsing** — Browse a list of products with detailed views
 - **Shopping Basket** — Add items to basket with quantity controls, view totals
 - **User Login** — Simple username-based login flow
-- **WebContainer Bridge** — Embed web content and enable JS ↔ Native bidirectional communication via a rule-based routing system
+- **WebContainer Bridge** — Embed web content and enable JS ↔ Native bidirectional communication via a rule-based routing system with wildcard matching and present fallback
+- **Dynamic Route Dispatch** — Type any VC route name in the WebTest page and navigate to it dynamically; unknown routes show a native alert
 - **Analytics Tracking** — Event tracking pipeline from the app through to a backend API
 - **Dev/Prod Environment Switching** — Seamless switch between mock/localhost and production API via launch arguments
 - **Mock API Layer** — Fully functional mock API provider with realistic product data for offline development
@@ -117,7 +118,7 @@ MyEcommerce/
 
 ### Package Count
 
-**8** `Package.swift` files producing **15+** SPM targets across **~70 source files**.
+**10** `Package.swift` files producing **15+** SPM targets across **~100 source files**.
 
 ---
 
@@ -231,31 +232,36 @@ JS in web page: window.webkit.messageHandlers.nativeBridge.postMessage({action, 
       → ProcessBridgeCommandUseCase.execute(command:)
         → WebBridgeRuleRepository: matches command against registered rules
           (exact match by action+target first, then wildcard by action)
-        → Returns matched NativeBridgeAction
+        → Returns matched NativeBridgeAction (with dynamic route if wildcard)
       → NativeBridgeRouter.dispatch(action:)
         → WebRouteFactoryProtocol.makeViewController(route)
-        → navigationController.pushViewController() / presentSheet() / etc.
+        → navigationController.pushViewController() (or present as sheet if no nav)
 ```
 
-### Bridge Rules (7 pre-registered)
+### Bridge Rules (8 pre-registered)
 
-| Action | Target | Handler |
+| Action | Target | Native Action |
 |---|---|---|
-| `navigate` | `webTestNative` | Push `WebTestNativeProbeView` |
-| `navigate` | `productDetail` | Push product detail (placeholder) |
-| `system` | `camera` | Native camera interface |
-| `system` | `location` | Request location permission |
-| `system` | `share` | System share sheet |
-| `customFunction` | `showAlert` | Native `UIAlertController` |
-| `customFunction` | `calculate` | Evaluate and return result |
+| `navigate` | `productList` | Push `ProductListView` |
+| `navigate` | `productDetail` | Push product detail (placeholder, returns nil) |
+| `navigate` | `nil` (wildcard, priority 1) | Dynamic route — uses `command.target` as route name, shows alert if not found |
+| `presentSheet` | `webTestNativeScreen` | Present `WebTestNativeProbeView` as page sheet |
+| `openCamera` | `nil` | Native camera interface (stub) |
+| `dismiss` | `nil` | Dismiss current presented VC |
+| `shareContent` | `nil` | System share sheet |
+| `showAlert` | `nil` | Native `UIAlertController` |
+
+Exact matches (action + target) take precedence. Wildcard rules (target = nil, action match) serve as fallback. The wildcard `navigate` rule enables **dynamic routing**: any unrecognized route name is passed to the route factory; if no ViewController is registered for it, a native alert is shown.
 
 ### WebTest Tab
 
 A built-in debugging tab that loads `webtest.html` — a full-featured HTML test page with:
-- Route navigation tests (fixed and dynamic)
-- System capability invocation tests
+- Route navigation tests (fixed and dynamic — type any VC name to navigate)
+- System capability invocation tests (camera, share, alert)
 - Custom function round-trip tests
 - Live log panel showing bridge callbacks
+
+The test page includes a **dynamic route input** that sends unrecognized VC names through the wildcard bridge rule. If the route factory has a registered ViewController for that name, it navigates (push or present); otherwise a native alert shows the error.
 
 ---
 
@@ -274,7 +280,7 @@ Each layer contributes registrations:
 - **Data layer:** `registerProductService()`, `registerProductRepository()`, etc.
 - **Domain layer:** `registerGetProductsUseCase()`, `registerLoginUserUseCase()`, etc.
 - **Utilities:** `registerAnalyticsWrapper()`
-- **App layer:** `WebRouteFactoryProtocol`, `NativeBridgeRouter`, `WebContainerViewModel`
+- **App layer:** `WebRouteFactoryProtocol`, `NativeBridgeRouter` (with lazy nav controller binding and present fallback), `WebContainerViewModel`
 
 ViewModels resolve dependencies at runtime via `DIContainer.shared.resolve()`.
 

@@ -19,8 +19,28 @@ public final class NativeBridgeRouter {
     public func dispatch(_ action: NativeBridgeAction) {
         switch action {
         case .pushRoute(let route, let params):
-            guard let vc = routeFactory.makeViewController(route: route, params: params) else { return }
-            navigationController?.pushViewController(vc, animated: true)
+            guard let vc = routeFactory.makeViewController(route: route, params: params) else {
+                let alert = UIAlertController(
+                    title: "路由错误",
+                    message: "找不到对应 VC: \(route)",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "确认", style: .default))
+                if let nav = navigationController {
+                    nav.present(alert, animated: true)
+                } else if let topVC = Self.topmostViewController() {
+                    topVC.present(alert, animated: true)
+                }
+                return
+            }
+            if let nav = navigationController {
+                nav.pushViewController(vc, animated: true)
+            } else {
+                vc.modalPresentationStyle = .pageSheet
+                if let topVC = Self.topmostViewController() {
+                    topVC.present(vc, animated: true)
+                }
+            }
         case .presentSheet(let route, let params):
             guard let vc = routeFactory.makeViewController(route: route, params: params) else { return }
             vc.modalPresentationStyle = .pageSheet
@@ -57,5 +77,20 @@ public final class NativeBridgeRouter {
     /// 当路由在 DI 阶段初始化后、实际视图创建 NavigationStack 时才获取到 UINavigationController 时使用。
     public func setNavigationController(_ navigationController: UINavigationController?) {
         self.navigationController = navigationController
+    }
+
+    // MARK: - Private Helpers
+
+    /// 查找当前最顶层的 presented ViewController，用于无导航控制器时的 present 降级。
+    private static func topmostViewController() -> UIViewController? {
+        guard let scene = UIApplication.shared.connectedScenes.first(where: {
+            $0.activationState == .foregroundActive
+        }) as? UIWindowScene else { return nil }
+        let rootVC = scene.windows.first(where: { $0.isKeyWindow })?.rootViewController
+        var top = rootVC
+        while let presented = top?.presentedViewController {
+            top = presented
+        }
+        return top
     }
 }
