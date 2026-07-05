@@ -30,6 +30,13 @@ public final class AppRouter: RouterProtocol {
     /// 当前活跃的转场协调器（用于自定义动画时防止提前释放）
     private var activeTransitionCoordinator: TransitioningCoordinator?
 
+    /// 导航控制器当前是否正在执行转场动画。
+    /// 用于防止连续快速触发跳转时出现栏状态错乱、黑屏或卡死。
+    private var isTransitioning: Bool {
+
+        navigationController?.transitionCoordinator != nil
+    }
+
     private enum NavigationType {
 
         case push
@@ -52,9 +59,13 @@ public final class AppRouter: RouterProtocol {
 
     public func navigate(to route: AppRoute, configuration: RouteConfiguration) {
 
+        // 防抖：导航动画进行中时忽略新的跳转请求，避免栏状态错乱或卡死
+        guard !isTransitioning else { return }
+
         guard let viewController = factoryRegistry.viewController(for: route) else { return }
 
-        applyBarVisibilityIfNeeded(configuration.barVisibility)
+        let style = configuration.presentationStyle ?? .push
+        applyBarVisibilityIfNeeded(configuration.barVisibility, for: viewController, isPush: style.isPush)
         applyTitleIfNeeded(configuration.titleConfiguration, to: viewController)
 
         let style = configuration.presentationStyle ?? .push
@@ -151,12 +162,30 @@ public final class AppRouter: RouterProtocol {
 
     // MARK: - Private Helpers
 
-    private func applyBarVisibilityIfNeeded(_ config: RouteBarVisibilityConfiguration?) {
+    /// 应用导航栏与 TabBar 可见性配置。
+    /// - Parameters:
+    ///   - config: 可见性配置（all nil = 不改变当前状态）
+    ///   - viewController: 目标页面（用于设置 hidesBottomBarWhenPushed）
+    ///   - isPush: 当前是否为 push 跳转（tabBar 隐藏仅对 push 有效）
+    private func applyBarVisibilityIfNeeded(
+        _ config: RouteBarVisibilityConfiguration?,
+        for viewController: UIViewController,
+        isPush: Bool
+    ) {
 
         guard let config = config else { return }
         let animated = config.animated ?? true
+
+        // 导航栏隐藏/显示
         if let hidesNavBar = config.hidesNavigationBar {
             navigationController?.setNavigationBarHidden(hidesNavBar, animated: animated)
+        }
+
+        // TabBar 隐藏/显示（仅 push 场景有效）
+        if let hidesTabBar = config.hidesTabBar, isPush {
+            // hidesBottomBarWhenPushed 在 push 之前设置，
+            // UIKit 自动将 tabBar 的隐藏/显示与 push/pop 动画同步，丝滑无跳变。
+            viewController.hidesBottomBarWhenPushed = hidesTabBar
         }
     }
 
@@ -225,6 +254,17 @@ private extension RouteModalStyle {
         case .formSheet:   return .formSheet
         case .automatic:   return .automatic
         }
+    }
+}
+
+// MARK: - RoutePresentationStyle helpers
+
+private extension RoutePresentationStyle {
+
+    var isPush: Bool {
+
+        if case .push = self { return true }
+        return false
     }
 }
 
