@@ -199,10 +199,31 @@ public final class AppRouter: RouterProtocol {
 
         case .attributedText(let attributedText):
             viewController.title = attributedText.string
+            applyAttributedTitleStyle(attributedText, to: viewController)
 
-        case .customTitleView:
-            break
+        case .customTitleView(let provider):
+            viewController.navigationItem.titleView = provider.makeTitleView()
         }
+    }
+
+    /// 创建 per-page UINavigationBarAppearance，应用富文本标题样式。
+    /// 从 NSAttributedString 中提取 font / foregroundColor / alignment 等属性，
+    /// 设置到 viewController.navigationItem 的 standardAppearance / scrollEdgeAppearance，
+    /// 不影响 BaseNavigationController 设置的全局默认样式。
+    /// UIKit 在 pop 回上一页时自动恢复该页的外观，无需手动 cleanup。
+    private func applyAttributedTitleStyle(_ attributedText: NSAttributedString, to viewController: UIViewController) {
+
+        let range = NSRange(location: 0, length: attributedText.length)
+        let attributes = attributedText.attributes(at: 0, effectiveRange: nil)
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.titleTextAttributes = attributes
+        appearance.largeTitleTextAttributes = attributes
+
+        viewController.navigationItem.standardAppearance = appearance
+        viewController.navigationItem.scrollEdgeAppearance = appearance
+        viewController.navigationItem.compactAppearance = appearance
     }
 
     private func applyBackButtonConfiguration(_ config: RouteBackButtonConfiguration?, to viewController: UIViewController) {
