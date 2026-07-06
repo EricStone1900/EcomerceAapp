@@ -34,7 +34,10 @@ Do not build without approval — the project uses SPM packages that resolve via
 | Data/`{Feature}Data` | `{Feature}DataTests` | ✓ (except WebContainer) |
 | Presentation/`{Feature}Feature` | `{Feature}FeatureTests` | ✓ (all features) |
 | Utilities/Networking (API) | APITests | ✓ |
-| Utilities/Utils | — | No tests |
+| Utilities/Analytics | AnalyticsTests | ✓ |
+| Utilities/Utils | UtilsTests | ✓ |
+| Utilities/DesignSystem | — | No tests (stage 1) |
+| Utilities/PresentationCore | — | No tests |
 
 Routing (RoutingDomain) has 5 unit tests — use `swift test --filter RoutingDomainTests`.
 AnalyticsDomain (TrackPageLifecycleUseCase) has 7 unit tests — use `swift test --filter AnalyticsDomainTests`.
@@ -61,11 +64,11 @@ Presentation/Features → Domain → Abstraction ← Data
 | **Domain** | Use case implementations | Abstraction, RxSwift |
 | **Data** | Repository + Service implementations, DTOs, AppRouter | Abstraction, Networking, RxSwift |
 | **Presentation** | SwiftUI Views + ViewModels (ObservableObject), Route enums + factories | Domain protocols, Abstraction, Utils, PresentationCore |
-| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, PresentationCore | RxSwift, RxCocoa |
+| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, PresentationCore, DesignSystem (color tokens) | RxSwift, RxCocoa |
 
 ### Package Structure Pattern
 
-Every `Package.swift` uses a **`CaseIterable` enum-based pattern** with typed dependency helpers:
+Every `Package.swift` uses `swift-tools-version: 6.2` targeting iOS 15. Most follow a **`CaseIterable` enum-based pattern** with typed dependency helpers:
 
 ```swift
 enum DomainProduct: String, CaseIterable {
@@ -77,7 +80,9 @@ enum DomainProduct: String, CaseIterable {
 // Dependency helpers: .internal(.ProductDomain), .external(.RxSwift), .abstraction(.BasketAbstraction), .utility(.API)
 ```
 
-To add a new target to an existing package:
+**Exceptions** (traditional `Package.swift` without the enum pattern): `PresentationCore`, `Analytics`, and `Networking/API` use explicit target definitions instead.
+
+To add a new target to an existing package using the enum pattern:
 1. Add a new case to the `CaseIterable` enum
 2. Define `dependencies` and `testsDependencies` in the computed property switch
 3. If tests should be skipped (like WebContainer), return `[]` from `testsTargets`
@@ -185,13 +190,13 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 
 ### Package Count
 
-13 `Package.swift` files producing 20+ SPM targets across ~130 source files.
+12 `Package.swift` files producing 20+ SPM targets across ~160 source files.
 
 ### Docs
 
 - `docs/architecture.md` — Detailed architecture documentation
-- `docs/plans/` — Implementation plans (8 stages)
-- `docs/specs/` — Feature specifications (8 stages)
+- `docs/plans/` — Implementation plans (including stage 1 DesignSystem)
+- `docs/specs/` — Feature specifications
 
 ## Common Development Tasks
 
