@@ -109,6 +109,7 @@ Presentation/Features  →  Domain  →  Abstraction  ←  Data
 | **Utilities/Networking** | RxSwift + RxCocoa |
 | **Utilities/Utils** | RxSwift + Combine |
 | **Utilities/Analytics** | 无 |
+| **Utilities/DesignSystem** | 设计令牌系统 — ColorTokensProviding（8 语义色 + Asset Catalog 深色/浅色模式）、TypographyTokensProviding（8 字号档位 + Dynamic Type）、RadiusTokensProviding（4 圆角档位）、SpacingTokensProviding（6 间距档位，4pt 网格）、ShadowTokensProviding（card/elevated 两档阴影）、UIKit 兼容层（UIColor+DesignSystem、UIFont+DesignSystem） | SwiftUI 内置（无外部依赖） |
 | **Utilities/PresentationCore** | RoutingAbstraction, AnalyticsAbstraction, DIAbstraction, Swinject |
 
 ---

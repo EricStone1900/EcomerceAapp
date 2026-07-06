@@ -198,6 +198,45 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 - `docs/plans/` — Implementation plans (including stage 1 DesignSystem)
 - `docs/specs/` — Feature specifications
 
+## DesignSystem 使用规范
+
+所有新增 UI 页面必须使用 DesignSystem 提供的语义化令牌，禁止硬编码具体数值。
+
+### 常用令牌速查
+
+| 类别 | 使用方式 |
+|------|---------|
+| **颜色** | `.foregroundColor(.appTextPrimary)`、`.background(Color.appBackground)` |
+| **字体** | `.font(.appBody)`、`.font(.appHeadline)`、`.font(.appTitle)` |
+| **间距** | `VStack(spacing: .spacingM)`、`.designPadding(.l)`、`.designPadding(.horizontal, .m)` |
+| **圆角** | `.designCornerRadius(.medium)`、`.designCornerRadius(.large)`、`.designCornerRadius(.pill)` |
+| **阴影** | `.designShadow(.elevated)`（按钮、弹窗）、`.designShadow(.card)`（卡片） |
+
+### 可用令牌一览
+
+| 协议 | 槽位 |
+|------|------|
+| `ColorTokensProviding` | primary / secondary / background / textPrimary / textSecondary / success / warning / error |
+| `TypographyTokensProviding` | largeTitle / title / title2 / headline / subheadline / body / callout / caption |
+| `RadiusTokensProviding` | small(4) / medium(8) / large(12) / pill(Capsule) |
+| `SpacingTokensProviding` | xs(4) / s(8) / m(12) / l(16) / xl(24) / xxl(32) |
+| `ShadowTokensProviding` | card / elevated |
+
+### 导入方式
+
+```swift
+import DesignSystem
+
+// 然后即可使用
+Text("Title").font(.appTitle).foregroundColor(.appTextPrimary)
+    .designPadding(.l)
+    .designCornerRadius(.medium)
+```
+
+### Dynamic Type
+
+字体令牌使用 `UIFontMetrics` 实现了 Dynamic Type 缩放，用户调整系统字体大小时字体自动适配。无需额外处理。
+
 ## Common Development Tasks
 
 ### Adding a New Feature

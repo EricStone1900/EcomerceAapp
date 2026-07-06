@@ -33,15 +33,12 @@ public struct WebTestNativeProbeView: View {
                     .foregroundColor(.appTextSecondary)
 
                 Text(timestamp)
-//                    .font(.appBody)
-//                    .monospaced()
-                    .font(.system(.body, design: .monospaced))
                     .foregroundColor(.appTextPrimary)
             }
             .designPadding(.l)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.systemGray6))
+                // TODO: 替换为 surface 色值
+                Color(.systemGray6)
             )
             .designCornerRadius(.large)
 
