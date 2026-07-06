@@ -1,5 +1,7 @@
 import SwiftUI
 
+import DesignSystem
+
 public struct BasketView: View {
     
     @StateObject var viewModel: BasketViewModel = BasketViewModel()
@@ -15,16 +17,17 @@ public struct BasketView: View {
         VStack {
             
             if viewModel.baskets.isEmpty {
-                Text ("Your cart is empty").padding()
+                Text ("Your cart is empty")
+                    .designPadding(.l)
             } else {
                 List {
                     ForEach(viewModel.baskets, id: \.id) { basket in
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(basket.productName)
-                                    .font(.headline)
+                                    .font(.appHeadline)
                                 Text("price: \(String(format:"%.2f", basket.price))")
-                                    .font(.subheadline)
+                                    .font(.appSubheadline)
                             }
                             Spacer()
                             Text("Quantity: \(basket.quantity)")
@@ -37,8 +40,8 @@ public struct BasketView: View {
                 HStack {
                     Spacer()
                     Text("Total: \(String(format:"%.2f", viewModel.calculateTotalPrice()))")
-                        .font(.title2)
-                        .padding()
+                        .font(.appTitle2)
+                        .designPadding(.l)
                 }
             }
         }

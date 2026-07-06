@@ -1,5 +1,7 @@
 import SwiftUI
 
+import DesignSystem
+
 /// WebTest 原生探针页。
 /// 验证从 WebTest HTML 页面跳转到原生页面的链路畅通。
 public struct WebTestNativeProbeView: View {
@@ -13,42 +15,45 @@ public struct WebTestNativeProbeView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .spacingXl) {
             Spacer()
 
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 64))
-                .foregroundColor(.green)
+                .foregroundColor(.appSuccess)
 
             Text("✅ 已从 WebTest 成功跳转")
-                .font(.title2)
+                .font(.appTitle2)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
 
-            VStack(spacing: 8) {
+            VStack(spacing: .spacingS) {
                 Text("跳转时间戳")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.appCaption)
+                    .foregroundColor(.appTextSecondary)
 
                 Text(timestamp)
+//                    .font(.appBody)
+//                    .monospaced()
                     .font(.system(.body, design: .monospaced))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.appTextPrimary)
             }
-            .padding()
+            .designPadding(.l)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color(.systemGray6))
             )
+            .designCornerRadius(.large)
 
             Text("每次跳转都会生成新的时间戳，验证原生路由链路畅通")
-                .font(.footnote)
-                .foregroundColor(.secondary)
+                .font(.appCaption)
+                .foregroundColor(.appTextSecondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                .designPadding(.horizontal, .l)
 
             Spacer()
         }
-        .padding()
+        .designPadding(.l)
         .navigationTitle("探针页")
         .navigationBarTitleDisplayMode(.inline)
     }

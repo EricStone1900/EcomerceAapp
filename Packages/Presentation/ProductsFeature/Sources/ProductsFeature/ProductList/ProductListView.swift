@@ -1,5 +1,7 @@
 import SwiftUI
 
+import DesignSystem
+
 public struct ProductListView: View {
     
     @StateObject var productsListViewModel = ProductsListViewModel()
@@ -23,9 +25,9 @@ public struct ProductListView: View {
                 ) {
                     VStack(alignment: .leading) {
                         Text(product.name)
-                            .font(.headline)
+                            .font(.appHeadline)
                         Text(String(format: "%.2f €", product.price))
-                            .font(.subheadline)
+                            .font(.appSubheadline)
                     }
                 }
             }

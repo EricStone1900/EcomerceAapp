@@ -64,7 +64,7 @@ Presentation/Features → Domain → Abstraction ← Data
 | **Domain** | Use case implementations | Abstraction, RxSwift |
 | **Data** | Repository + Service implementations, DTOs, AppRouter | Abstraction, Networking, RxSwift |
 | **Presentation** | SwiftUI Views + ViewModels (ObservableObject), Route enums + factories | Domain protocols, Abstraction, Utils, PresentationCore |
-| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, PresentationCore, DesignSystem (color tokens) | RxSwift, RxCocoa |
+| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, DesignSystem (color/font/radius/spacing tokens + UIKit bridge), PresentationCore | RxSwift, RxCocoa |
 
 ### Package Structure Pattern
 

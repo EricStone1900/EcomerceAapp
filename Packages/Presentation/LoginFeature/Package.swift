@@ -12,6 +12,7 @@ let package = Package(
         .package(path: "../Abstraction"),
         .package(path: "../Utilities/Utils"),
         .package(path: "../Utilities/PresentationCore"),
+        .package(path: "../Utilities/DesignSystem"),
 
     ],
     targets: LoginFeature.allCases.map(\.target) + LoginFeature.allCases.flatMap(\.testsTargets)
@@ -102,6 +103,8 @@ enum Utility: String {
 
     case PresentationCore
 
+    case DesignSystem
+
     var dependency: Target.Dependency {
 
         return switch self {
@@ -118,6 +121,13 @@ enum Utility: String {
             .product(
                 name: "PresentationCore",
                 package: "PresentationCore"
+            )
+
+        case .DesignSystem:
+
+            .product(
+                name: "DesignSystem",
+                package: "DesignSystem"
             )
         }
     }
@@ -154,6 +164,7 @@ extension LoginFeature {
                 .abstraction(.RoutingAbstraction),
                 .utility(.Utils),
                 .utility(.PresentationCore),
+                .utility(.DesignSystem),
             ]
         }
 

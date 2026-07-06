@@ -1,5 +1,7 @@
 import SwiftUI
 
+import DesignSystem
+
 public struct LoginView: View {
     
     @State private var username: String = String()
@@ -14,7 +16,7 @@ public struct LoginView: View {
         
         NavigationView {
             
-            VStack(spacing: 16) {
+            VStack(spacing: .spacingL) {
                 
                 TextField(
                     "Username",
@@ -26,9 +28,10 @@ public struct LoginView: View {
                     loginViewModel.login(username: username)
                 }
                 .buttonStyle(.borderedProminent)
+                .designShadow(.elevated)
                 
             }
-            .padding()
+            .designPadding(.l)
             .navigationTitle("Login")
         }
     }

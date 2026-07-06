@@ -1,6 +1,8 @@
 #if canImport(UIKit)
 import UIKit
 
+import DesignSystem
+
 /// UINavigationController 基类，统一配置导航栏外观。
 ///
 /// 所有通过路由框架创建的页面共享同一套 UI 规范：
@@ -30,12 +32,12 @@ open class BaseNavigationController: UINavigationController {
 
         // 标题样式
         appearance.titleTextAttributes = [
-            .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
-            .foregroundColor: UIColor.label,
+            .font: UIFont.appHeadline,
+            .foregroundColor: UIColor.appTextPrimary,
         ]
         appearance.largeTitleTextAttributes = [
-            .font: UIFont.systemFont(ofSize: 34, weight: .bold),
-            .foregroundColor: UIColor.label,
+            .font: UIFont.appLargeTitle,
+            .foregroundColor: UIColor.appTextPrimary,
         ]
 
         // 返回按钮样式（使用 SF Symbols 系统图标）
@@ -48,7 +50,7 @@ open class BaseNavigationController: UINavigationController {
         navigationBar.compactAppearance = appearance
 
         // Bar 按钮全局色调
-        navigationBar.tintColor = .systemBlue
+        navigationBar.tintColor = UIColor.appPrimary
     }
 }
 #endif
