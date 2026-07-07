@@ -25,40 +25,35 @@ public struct AppRemoteImage: View {
 
     // MARK: - Init
 
-    /// 创建图片加载视图
-    /// - Parameter url: 图片 URL 字符串，为 nil 或空时显示占位图
     public init(url: String?) {
         self.url = url
         self.radius = ImageLoadingConfiguration.defaultCornerRadius
         self.mode = ImageLoadingConfiguration.defaultContentMode
         self.downsampleSize = ImageLoadingConfiguration.defaultDownsamplingSize
         self.placeholderView = nil
+        print("[AppRemoteImage] init: \(url ?? "nil")")
     }
 
     // MARK: - Chainable Modifiers
 
-    /// 自定义加载中 / 失败时占位视图
     public func placeholder<Placeholder: View>(@ViewBuilder _ placeholder: () -> Placeholder) -> AppRemoteImage {
         var copy = self
         copy.placeholderView = AnyView(placeholder())
         return copy
     }
 
-    /// 设置圆角大小
     public func cornerRadius(_ radius: CGFloat) -> AppRemoteImage {
         var copy = self
         copy.radius = radius
         return copy
     }
 
-    /// 设置裁剪模式
     public func contentMode(_ mode: SwiftUI.ContentMode) -> AppRemoteImage {
         var copy = self
         copy.mode = mode
         return copy
     }
 
-    /// 设置下采样尺寸（设为 `.zero` 可关闭下采样）
     public func downsampling(size: CGSize) -> AppRemoteImage {
         var copy = self
         copy.downsampleSize = size
@@ -69,42 +64,37 @@ public struct AppRemoteImage: View {
 
     public var body: some View {
         if let urlString = url, let imageURL = URL(string: urlString), !urlString.isEmpty {
-            kfImageView(url: imageURL)
+            KFImage.url(imageURL)
+                .placeholder { _ in
+                    placeholderContent
+                }
+                .onSuccess { result in
+                    print("[AppRemoteImage] ✅ loaded: \(result.image.size)")
+                }
+                .onFailure { error in
+                    print("[AppRemoteImage] ❌ fail: \(error.localizedDescription)")
+                }
+                .setProcessor(resolvedProcessor)
+                .startLoadingBeforeViewAppear()
+                .resizable()
+                .aspectRatio(contentMode: mode)
+                .clipShape(RoundedRectangle(cornerRadius: radius > 0 ? radius : 0))
         } else {
-            defaultPlaceholder
+            placeholderContent
         }
     }
 
-    // MARK: - Private Views
+    // MARK: - Private
 
-    @ViewBuilder
-    private func kfImageView(url imageURL: URL) -> some View {
-        let processor: ImageProcessor = {
-            if downsampleSize != .zero, downsampleSize.width > 0, downsampleSize.height > 0 {
-                return DownsamplingImageProcessor(size: downsampleSize)
-            }
-            return DefaultImageProcessor.default
-        }()
-
-        let image = KFImage(imageURL)
-            .placeholder { _ in
-                defaultPlaceholder
-            }
-            .setProcessor(processor)
-            .resizable()
-            .aspectRatio(contentMode: mode)
-
-        if radius > 0 {
-            image
-                .clipShape(RoundedRectangle(cornerRadius: radius))
-        } else {
-            image
+    private var resolvedProcessor: any ImageProcessor {
+        if downsampleSize != .zero, downsampleSize.width > 0, downsampleSize.height > 0 {
+            return DownsamplingImageProcessor(size: downsampleSize)
         }
+        return DefaultImageProcessor.default
     }
 
-    /// 默认占位内容：优先使用链式传入的 placeholder，否则使用配置中的默认占位图
     @ViewBuilder
-    private var defaultPlaceholder: some View {
+    private var placeholderContent: some View {
         if let placeholderView {
             placeholderView
         } else if let defaultImage = ImageLoadingConfiguration.defaultPlaceholderImage {

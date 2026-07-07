@@ -27,6 +27,7 @@ final class ProductsListViewModel: ObservableObject {
         getProductsUseCase.start()
             .asPublisher()
             .receive(on: DispatchQueue.main)
+            .print("Products数据流 \(products)")
             .assign(to: \.products, on: self)
             .store(in: &cancellables)
         

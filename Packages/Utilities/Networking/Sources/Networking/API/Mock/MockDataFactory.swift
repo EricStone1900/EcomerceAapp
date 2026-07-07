@@ -10,6 +10,16 @@ struct MockProduct: Codable, Sendable {
     let category: String
     let quantity: Int
     let imageURL: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case description
+        case price
+        case category
+        case quantity
+        case imageURL = "image_url"
+    }
 }
 
 // MARK: - Mock Basket Item
@@ -20,6 +30,14 @@ struct MockBasketItem: Codable, Sendable {
     let productName: String
     let quantity: Int
     let price: Double
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case productID = "product_id"
+        case productName = "product_name"
+        case quantity
+        case price
+    }
 }
 
 // MARK: - Mock User
