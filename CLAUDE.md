@@ -237,6 +237,34 @@ Text("Title").font(.appTitle).foregroundColor(.appTextPrimary)
 
 字体令牌使用 `UIFontMetrics` 实现了 Dynamic Type 缩放，用户调整系统字体大小时字体自动适配。无需额外处理。
 
+## ImageLoading 使用规范
+
+展示远程图片时必须使用 `ImageLoading` 包的 `AppRemoteImage`，禁止直接使用 `KFImage` 或系统 `AsyncImage`。
+
+### 快速速查
+
+```swift
+import ImageLoading
+
+// 基本用法
+AppRemoteImage(url: URL(string: product.imageUrl))
+
+// 自定义占位图
+AppRemoteImage(url: url)
+    .placeholder { ProgressView() }
+    .frame(width: 60, height: 60)
+
+// 自定义失败图
+AppRemoteImage(url: url)
+    .onFailure { Image(systemName: "photo") }
+```
+
+### 约定
+- Feature 包只依赖 `ImageLoading`，不直接依赖 `Kingfisher`
+- 模型中图片 URL 属性统一命名为 `imageUrl: String?`
+- 占位图默认显示灰色背景，失败默认显示 `photo.badge.exclamationmark` 图标
+- 全局缓存策略只在 `MyEcommerceApp.init()` 中配置一次
+
 ## Common Development Tasks
 
 ### Adding a New Feature
