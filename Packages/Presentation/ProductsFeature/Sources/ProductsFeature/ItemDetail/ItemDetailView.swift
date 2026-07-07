@@ -1,8 +1,8 @@
 import SwiftUI
 
 import DesignSystem
-import ProductAbstraction
 import ImageLoading
+import ProductAbstraction
 
 struct ItemDetailView: View {
 
@@ -12,15 +12,13 @@ struct ItemDetailView: View {
 
     var body: some View {
 
-        ScrollView {
-            VStack(alignment: .leading, spacing: .spacingM) {
+        VStack {
+            AppRemoteImage(url: viewModel.product.imageURL)
+                .frame(height: 250)
+                .frame(maxWidth: .infinity)
+                .clipped()
 
-                AppRemoteImage(url: viewModel.product.imageUrl.flatMap(URL.init(string:)))
-                    .placeholder { ProgressView() }
-                    .frame(height: 250)
-                    .frame(maxWidth: .infinity)
-                    .designCornerRadius(.large)
-                    .clipped()
+            VStack(alignment: .leading, spacing: .spacingM) {
 
                 Text(viewModel.product.name)
                     .font(.appTitle)
@@ -34,16 +32,16 @@ struct ItemDetailView: View {
 
                 Stepper("Quantity : \(viewModel.quantity)", value: $viewModel.quantity, in: 1...viewModel.product.quantity)
 
-                Spacer()
-
-                Button("Add to Basket") {
-
-                    viewModel.addProduct()
-                }
-                .buttonStyle(.borderedProminent)
-                .frame(maxWidth: .infinity)
             }
-            .designPadding(.l)
+
+            Spacer()
+
+            Button("Add to Basket") {
+
+                viewModel.addProduct()
+            }
+            .buttonStyle(.borderedProminent)
         }
+        .designPadding(.l)
     }
 }

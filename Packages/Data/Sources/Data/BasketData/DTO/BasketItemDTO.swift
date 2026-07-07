@@ -12,6 +12,14 @@ struct BasketItemDTO: Codable {
 
     var price: Double
 
-    var imageUrl: String?
+    var imageURL: String?
 
+    enum CodingKeys: String, CodingKey {
+        case id
+        case productID = "product_id"
+        case productName = "product_name"
+        case quantity
+        case price
+        case imageURL = "image_url"
+    }
 }

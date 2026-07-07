@@ -25,7 +25,7 @@ public struct ProductRepository: ProductRepositoryProtocol {
                         price: $0.price,
                         category: $0.category,
                         quantity: $0.quantity,
-                        imageUrl: $0.imageUrl
+                        imageURL: $0.imageURL
                     )
                 }
             }

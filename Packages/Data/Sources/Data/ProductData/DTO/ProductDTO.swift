@@ -16,6 +16,15 @@ struct ProductDTO: Codable {
 
     var quantity: Int
 
-    var imageUrl: String?
+    var imageURL: String?
 
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case description
+        case price
+        case category
+        case quantity
+        case imageURL = "image_url"
+    }
 }

@@ -8,6 +8,12 @@ let package = Package(
         .iOS(.v15),
         .macOS(.v12)
     ],
+    products: [
+        .library(
+            name: "ImageLoading",
+            targets: ["ImageLoading"]
+        )
+    ],
     dependencies: [
         .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "8.0.0"))
     ],

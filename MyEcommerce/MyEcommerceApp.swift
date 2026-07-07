@@ -1,7 +1,5 @@
 import SwiftUI
 
-import ImageLoading
-
 import ProductsFeature
 import LoginFeature
 import BasketFeature
@@ -29,6 +27,8 @@ import WebContainerFeature
 import RoutingDomain
 import RoutingData
 import PresentationCore
+
+import ImageLoading
 
 enum Screen {
     case Products
@@ -58,7 +58,6 @@ struct MyEcommerceApp: App {
             
     init() {
 
-        // Configure global image cache
         ImageCacheBootstrap.configure()
 
         DIContainer.registerAPIProvider()

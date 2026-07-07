@@ -9,7 +9,7 @@ struct MockProduct: Codable, Sendable {
     let price: Double
     let category: String
     let quantity: Int
-    let imageUrl: String?
+    let imageURL: String?
 }
 
 // MARK: - Mock Basket Item
@@ -20,7 +20,6 @@ struct MockBasketItem: Codable, Sendable {
     let productName: String
     let quantity: Int
     let price: Double
-    let imageUrl: String?
 }
 
 // MARK: - Mock User
@@ -44,7 +43,7 @@ enum MockDataFactory {
             price: 3499.00,
             category: "Laptops",
             quantity: 15,
-            imageUrl: "https://picsum.photos/id/1/400/400"
+            imageURL: "https://picsum.photos/id/0/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "B7B62A9E-6A3D-4F1C-9B8D-2E5F1C8A7D6E")!,
@@ -53,7 +52,7 @@ enum MockDataFactory {
             price: 1199.00,
             category: "Phones",
             quantity: 42,
-            imageUrl: "https://picsum.photos/id/20/400/400"
+            imageURL: "https://picsum.photos/id/1/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "A1B2C3D4-E5F6-7890-ABCD-EF1234567890")!,
@@ -62,7 +61,7 @@ enum MockDataFactory {
             price: 249.00,
             category: "Audio",
             quantity: 100,
-            imageUrl: "https://picsum.photos/id/30/400/400"
+            imageURL: "https://picsum.photos/id/2/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "D4E5F6A7-B8C9-0123-4567-890ABCDEF123")!,
@@ -71,7 +70,7 @@ enum MockDataFactory {
             price: 799.00,
             category: "Tablets",
             quantity: 28,
-            imageUrl: "https://picsum.photos/id/40/400/400"
+            imageURL: "https://picsum.photos/id/3/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "FEDCBA98-7654-3210-FEDC-BA9876543210")!,
@@ -80,7 +79,7 @@ enum MockDataFactory {
             price: 799.00,
             category: "Wearables",
             quantity: 20,
-            imageUrl: "https://picsum.photos/id/50/400/400"
+            imageURL: "https://picsum.photos/id/4/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "11111111-2222-3333-4444-555555555555")!,
@@ -89,7 +88,7 @@ enum MockDataFactory {
             price: 1599.00,
             category: "Desktops",
             quantity: 10,
-            imageUrl: "https://picsum.photos/id/60/400/400"
+            imageURL: "https://picsum.photos/id/5/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "22222222-3333-4444-5555-666666666666")!,
@@ -98,7 +97,7 @@ enum MockDataFactory {
             price: 99.00,
             category: "Accessories",
             quantity: 200,
-            imageUrl: "https://picsum.photos/id/70/400/400"
+            imageURL: "https://picsum.photos/id/6/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "33333333-4444-5555-6666-777777777777")!,
@@ -107,7 +106,7 @@ enum MockDataFactory {
             price: 149.99,
             category: "Chargers",
             quantity: 35,
-            imageUrl: "https://picsum.photos/id/80/400/400"
+            imageURL: "https://picsum.photos/id/7/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "44444444-5555-6666-7777-888888888888")!,
@@ -116,7 +115,7 @@ enum MockDataFactory {
             price: 549.00,
             category: "Audio",
             quantity: 12,
-            imageUrl: "https://picsum.photos/id/90/400/400"
+            imageURL: "https://picsum.photos/id/8/300/300"
         ),
         MockProduct(
             id: UUID(uuidString: "55555555-6666-7777-8888-999999999999")!,
@@ -125,7 +124,7 @@ enum MockDataFactory {
             price: 129.00,
             category: "Accessories",
             quantity: 60,
-            imageUrl: "https://picsum.photos/id/100/400/400"
+            imageURL: "https://picsum.photos/id/9/300/300"
         )
     ]
 
@@ -137,16 +136,14 @@ enum MockDataFactory {
             productID: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!,
             productName: "MacBook Pro 16-inch M3 Max",
             quantity: 1,
-            price: 3499.00,
-            imageUrl: "https://picsum.photos/id/1/400/400"
+            price: 3499.00
         ),
         MockBasketItem(
             id: UUID(),
             productID: UUID(uuidString: "A1B2C3D4-E5F6-7890-ABCD-EF1234567890")!,
             productName: "AirPods Pro 2nd Generation USB-C",
             quantity: 2,
-            price: 249.00,
-            imageUrl: "https://picsum.photos/id/30/400/400"
+            price: 249.00
         )
     ]
 }

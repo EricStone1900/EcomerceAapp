@@ -37,6 +37,7 @@ Do not build without approval — the project uses SPM packages that resolve via
 | Utilities/Analytics | AnalyticsTests | ✓ |
 | Utilities/Utils | UtilsTests | ✓ |
 | Utilities/DesignSystem | — | No tests (stage 1) |
+| Utilities/ImageLoading | ImageLoadingTests | ✓ (9 tests) |
 | Utilities/PresentationCore | — | No tests |
 
 Routing (RoutingDomain) has 5 unit tests — use `swift test --filter RoutingDomainTests`.
@@ -64,7 +65,7 @@ Presentation/Features → Domain → Abstraction ← Data
 | **Domain** | Use case implementations | Abstraction, RxSwift |
 | **Data** | Repository + Service implementations, DTOs, AppRouter | Abstraction, Networking, RxSwift |
 | **Presentation** | SwiftUI Views + ViewModels (ObservableObject), Route enums + factories | Domain protocols, Abstraction, Utils, PresentationCore |
-| **Utilities** | Networking/API, Utils (Rx→Combine bridge), Analytics, DesignSystem (color/font/radius/spacing tokens + UIKit bridge), PresentationCore | RxSwift, RxCocoa |
+| **Utilities** | Networking/API, ImageLoading (Kingfisher 封装门面), Utils (Rx→Combine bridge), Analytics, DesignSystem (color/font/radius/spacing tokens + UIKit bridge), PresentationCore | RxSwift, RxCocoa, Kingfisher |
 
 ### Package Structure Pattern
 
@@ -165,7 +166,8 @@ LoginView → .fullScreenCover (when isConnected)
   → TabView (TabRouter via @EnvironmentObject)
     ├── Products Tab (ProductListView → push → ItemDetailView)
     ├── Basket Tab (BasketView)
-    └── WebTest Tab (WebTestEntryView → push → WebContainerView)
+    ├── WebTest Tab (WebTestEntryView → push → WebContainerView)
+    └── ModuleTest Tab (ModuleTestView — debug-only feature test list)
 ```
 
 `TabRouter` (ObservableObject with `@Published var screen: Screen`) controls tab selection.
@@ -190,7 +192,7 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 
 ### Package Count
 
-12 `Package.swift` files producing 20+ SPM targets across ~160 source files.
+13 `Package.swift` files producing 20+ SPM targets across ~180 source files.
 
 ### Docs
 
@@ -198,87 +200,66 @@ In DEBUG, reads from `-environment` launch argument. In RELEASE, always defaults
 - `docs/plans/` — Implementation plans (including stage 1 DesignSystem)
 - `docs/specs/` — Feature specifications
 
-## DesignSystem 使用规范
+## DesignSystem Usage
 
-所有新增 UI 页面必须使用 DesignSystem 提供的语义化令牌，禁止硬编码具体数值。
+All new UI pages must use DesignSystem semantic tokens — no hardcoded values.
 
-### 常用令牌速查
+Colors come from Asset Catalog `Color Sets` in the SPM bundle (`.xcassets`).
+Dark/light mode adaptation is handled automatically by the Asset Catalog.
 
-| 类别 | 使用方式 |
-|------|---------|
-| **颜色** | `.foregroundColor(.appTextPrimary)`、`.background(Color.appBackground)` |
-| **字体** | `.font(.appBody)`、`.font(.appHeadline)`、`.font(.appTitle)` |
-| **间距** | `VStack(spacing: .spacingM)`、`.designPadding(.l)`、`.designPadding(.horizontal, .m)` |
-| **圆角** | `.designCornerRadius(.medium)`、`.designCornerRadius(.large)`、`.designCornerRadius(.pill)` |
-| **阴影** | `.designShadow(.elevated)`（按钮、弹窗）、`.designShadow(.card)`（卡片） |
-
-### 可用令牌一览
-
-| 协议 | 槽位 |
-|------|------|
-| `ColorTokensProviding` | primary / secondary / background / textPrimary / textSecondary / success / warning / error |
-| `TypographyTokensProviding` | largeTitle / title / title2 / headline / subheadline / body / callout / caption |
-| `RadiusTokensProviding` | small(4) / medium(8) / large(12) / pill(Capsule) |
-| `SpacingTokensProviding` | xs(4) / s(8) / m(12) / l(16) / xl(24) / xxl(32) |
-| `ShadowTokensProviding` | card / elevated |
-
-### 导入方式
+| Category | Usage |
+|----------|-------|
+| **Color** | `.foregroundColor(.appTextPrimary)` / `.background(Color.appBackground)` / `.appPrimary` / `.appSecondary` / `.appSuccess` / `.appWarning` / `.appError` |
+| **Font** | `.font(.appTitle)` / `.appHeadline` / `.appBody` / `.appCaption` / `.appCallout` / `.appLargeTitle` / `.appTitle2` / `.appSubheadline` |
+| **Spacing** | `.designPadding(.m)` / `.designPadding(.horizontal, .l)` — xs(4) / s(8) / m(12) / l(16) / xl(24) / xxl(32) |
+| **Radius** | `.designCornerRadius(.medium)` / `.pill` — small(4) / medium(8) / large(12) / pill(Capsule) |
+| **Shadow** | `.designShadow(.card)` (cards) / `.designShadow(.elevated)` (buttons, modals) |
 
 ```swift
 import DesignSystem
 
-// 然后即可使用
 Text("Title").font(.appTitle).foregroundColor(.appTextPrimary)
     .designPadding(.l)
     .designCornerRadius(.medium)
 ```
 
-### Dynamic Type
+Font tokens use `UIFontMetrics` for Dynamic Type — no extra handling needed.
+Tokens are defined in `DefaultDesignTheme` conforming to `ColorTokensProviding`, `TypographyTokensProviding`, `RadiusTokensProviding`, `SpacingTokensProviding`, `ShadowTokensProviding`.
 
-字体令牌使用 `UIFontMetrics` 实现了 Dynamic Type 缩放，用户调整系统字体大小时字体自动适配。无需额外处理。
+## ImageLoading Usage
 
-## ImageLoading 使用规范
-
-展示远程图片时必须使用 `ImageLoading` 包的 `AppRemoteImage`，禁止直接使用 `KFImage` 或系统 `AsyncImage`。
-
-### 快速速查
+展示远程图片一律使用 `ImageLoading` 包的 `AppRemoteImage`，不直接使用 Kingfisher 或系统 `AsyncImage`：
 
 ```swift
 import ImageLoading
 
-// 基本用法
-AppRemoteImage(url: URL(string: product.imageUrl))
-
-// 自定义占位图
-AppRemoteImage(url: url)
-    .placeholder { ProgressView() }
+AppRemoteImage(url: product.imageURL)
     .frame(width: 60, height: 60)
-
-// 自定义失败图
-AppRemoteImage(url: url)
-    .onFailure { Image(systemName: "photo") }
+    .cornerRadius(8)
 ```
 
-### 约定
-- Feature 包只依赖 `ImageLoading`，不直接依赖 `Kingfisher`
-- 模型中图片 URL 属性统一命名为 `imageUrl: String?`
-- 占位图默认显示灰色背景，失败默认显示 `photo.badge.exclamationmark` 图标
-- 全局缓存策略只在 `MyEcommerceApp.init()` 中配置一次
+支持链式修饰：
+
+| 修饰器 | 说明 |
+|---|---|
+| `.placeholder { View }` | 自定义加载中/失败占位视图 |
+| `.cornerRadius(CGFloat)` | 设置圆角大小 |
+| `.contentMode(.fit/.fill)` | 设置裁剪模式 |
+| `.downsampling(size:)` | 设置下采样尺寸 |
+
+不要直接 import Kingfisher 使用 `KFImage`，所有 Feature 包应只依赖 `ImageLoading`。
+全局缓存策略在 `MyEcommerceApp.init()` 中通过 `ImageCacheBootstrap.configure()` 统一配置，Feature 包无需关心。
 
 ## Common Development Tasks
 
 ### Adding a New Feature
 
-1. **Define protocols** in `Packages/Abstraction/Sources/Abstraction/{Feature}Abstraction/` — repository, use case, domain model protocols
-2. **Register DI** — extend the enum in Abstraction's `Package.swift`
-3. **Implement use cases** in `Packages/Domain/Sources/Domain/{Feature}Domain/` with a `DI/DIContainer+{Feature}Domain.swift` registration file
-4. **Implement data layer** in `Packages/Data/Sources/Data/{Feature}Data/` — DTO, Service, Repository, DI
-5. **Create SwiftUI feature** in `Packages/Presentation/{Feature}Feature/` — View + ViewModel (ObservableObject)
-6. **Add route definition** — `Route/{Feature}Route.swift` (conform to `AppRoute`)
-7. **Add route factory** — `Route/{Feature}RouteFactory.swift` (implement `RouteFactoryProtocol`, wrap in `BaseHostingController`)
-8. **Wire DI** in `MyEcommerceApp.init()` — call the static `register*()` methods
-9. **Register factory** — add to `DIContainer.registerAllFeatureRouteFactories()` in `AppRouteFactoryRegistrar.swift`
-10. **Add tests** in each layer's `Tests/` directory — note that RoutingData tests use Swift Testing framework (`import Testing`), matching the Domain layer pattern
+1. **Define protocols** in `Packages/Abstraction/Sources/Abstraction/{Feature}Abstraction/` — repository, use case, domain model protocols. Register DI by extending the enum in `Package.swift`.
+2. **Implement use cases** in `Packages/Domain/Sources/Domain/{Feature}Domain/` with a `DI/DIContainer+{Feature}Domain.swift` registration file.
+3. **Implement data layer** in `Packages/Data/Sources/Data/{Feature}Data/` — DTO, Service, Repository, DI.
+4. **Create SwiftUI feature** in `Packages/Presentation/{Feature}Feature/` — View + ViewModel (ObservableObject), Route enum + factory.
+5. **Wire DI** — add `register{Feature}*()` calls to `MyEcommerceApp.init()` in dependency order, and add the route factory to `registerAllFeatureRouteFactories()` in `AppRouteFactoryRegistrar.swift`.
+6. **Add tests** in each layer's `Tests/` directory. RoutingData tests use Swift Testing (`import Testing`).
 
 ### Adding a New Route to an Existing Feature
 

@@ -69,6 +69,7 @@ MyEcommerceAppDemo/
 │       │       ├── APIConstants.swift    #     常量
 │       │       ├── Environment/          #     开发/生产环境切换
 │       │       └── Mock/                 #     Mock APIProvider + 数据工厂
+│       ├── ImageLoading/                  #   远程图片加载（Kingfisher 封装门面）
 │       ├── Utils/                        #   工具：RxObservable → Combine Publisher 桥接
 │       ├── Analytics/                    #   简易分析封装（打印事件）
 │       └── PresentationCore/             #   路由 UI 基类：BaseHostingController、BaseNavigationController
@@ -110,6 +111,7 @@ Presentation/Features  →  Domain  →  Abstraction  ←  Data
 | **Utilities/Utils** | RxSwift + Combine |
 | **Utilities/Analytics** | 无 |
 | **Utilities/DesignSystem** | 设计令牌系统 — ColorTokensProviding（8 语义色 + Asset Catalog 深色/浅色模式）、TypographyTokensProviding（8 字号档位 + Dynamic Type）、RadiusTokensProviding（4 圆角档位）、SpacingTokensProviding（6 间距档位，4pt 网格）、ShadowTokensProviding（card/elevated 两档阴影）、UIKit 兼容层（UIColor+DesignSystem、UIFont+DesignSystem） | SwiftUI 内置（无外部依赖） |
+| **Utilities/ImageLoading** | 远程图片加载门面 — AppRemoteImage（KFImage 封装）、ImageLoadingConfiguration、ImageCacheBootstrap | Kingfisher |
 | **Utilities/PresentationCore** | RoutingAbstraction, AnalyticsAbstraction, DIAbstraction, Swinject |
 
 ---

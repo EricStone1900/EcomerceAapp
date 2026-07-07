@@ -1,39 +1,36 @@
 import SwiftUI
-import Kingfisher
 
-/// A configuration model for remote image loading and display.
+/// 统一图片加载配置模型
+/// 定义默认占位图、失败图、圆角、裁剪模式等。
+/// 业务方可通过修改这些静态属性来全局调整图片展示样式。
 ///
-/// Use `ImageLoadingConfiguration` to customize the default placeholder,
-/// failure indicator, and display style of loaded images.
-public struct ImageLoadingConfiguration: Sendable {
+/// 注意：这些静态属性是全局可变状态，应在 App 启动时（MainActor 上）配置，
+/// 随后尽量避免在运行时修改。
+public struct ImageLoadingConfiguration {
 
-    // MARK: - Placeholder
+    // MARK: - 默认占位图
 
-    /// The color used as the default placeholder background while an image is loading.
-    public var placeholderColor: AppRemoteImage.PlaceholderColor
+    /// 加载中显示的占位图（SF Symbol）
+    public nonisolated(unsafe) static var defaultPlaceholderImage: Image? = Image(systemName: "photo")
 
-    /// The system icon name used as the default failure indicator.
-    public var failureIconName: String
+    /// 加载失败时显示的占位图
+    public nonisolated(unsafe) static var defaultFailureImage: Image? = Image(systemName: "photo.badge.exclamationmark")
 
-    // MARK: - Display
+    // MARK: - 默认样式
 
-    /// The transition duration (in seconds) for fade-in after a successful load.
-    public var transitionDuration: TimeInterval
+    /// 默认圆角大小
+    public nonisolated(unsafe) static var defaultCornerRadius: CGFloat = 8
 
-    // MARK: - Initializer
+    /// 默认裁剪模式
+    public nonisolated(unsafe) static var defaultContentMode: ContentMode = .fill
 
-    public init(
-        placeholderColor: AppRemoteImage.PlaceholderColor = .appBackground,
-        failureIconName: String = "photo.badge.exclamationmark",
-        transitionDuration: TimeInterval = 0.25
-    ) {
-        self.placeholderColor = placeholderColor
-        self.failureIconName = failureIconName
-        self.transitionDuration = transitionDuration
-    }
+    // MARK: - 默认下采样尺寸
 
-    // MARK: - Default
+    /// 下采样目标尺寸（用于列表缩略图）
+    /// 设置为 .zero 表示不下采样
+    public nonisolated(unsafe) static var defaultDownsamplingSize: CGSize = CGSize(width: 300, height: 300)
 
-    /// The default configuration shared across the app.
-    public static let `default` = ImageLoadingConfiguration()
+    // MARK: - Init
+
+    private init() {}
 }
