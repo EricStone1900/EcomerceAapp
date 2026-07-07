@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Abstraction",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v18)],
     products: AbstractionProduct.allCases.map(\.product),
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),

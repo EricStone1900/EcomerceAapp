@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Utils",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v18)],
     products: Utils.allCases.map(\.product),
     dependencies: [
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0"))

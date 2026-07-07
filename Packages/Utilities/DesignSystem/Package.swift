@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "DesignSystem",
-    platforms: [.iOS(.v15), .macOS(.v11)],
+    platforms: [.iOS(.v18), .macOS(.v11)],
     products: DesignSystemProduct.allCases.map(\.product),
     targets: DesignSystemProduct.allCases.map(\.target)
 )

@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Networking",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v18)],
     products: NetworkingProduct.allCases.map(\.product),
     dependencies: [
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
