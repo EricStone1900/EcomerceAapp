@@ -36,7 +36,8 @@ public struct BasketRepository: BasketRepositoryProtocol {
                         productID: $0.productID,
                         productName: $0.productName,
                         quantity: $0.quantity,
-                        price: $0.price
+                        price: $0.price,
+                        imageUrl: $0.imageUrl
                     )
                 }
             }

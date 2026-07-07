@@ -13,7 +13,7 @@ let package = Package(
         .package(path: "../Utilities/Utils"),
         .package(path: "../Utilities/PresentationCore"),
         .package(path: "../Utilities/DesignSystem"),
-
+        .package(path: "../Utilities/ImageLoading"),
     ],
     targets: BasketFeature.allCases.map(\.target) + BasketFeature.allCases.flatMap(\.testsTargets)
 )
@@ -96,6 +96,8 @@ enum Utility: String {
 
     case DesignSystem
 
+    case ImageLoading
+
     var dependency: Target.Dependency {
 
         return switch self {
@@ -119,6 +121,13 @@ enum Utility: String {
             .product(
                 name: "DesignSystem",
                 package: "DesignSystem"
+            )
+
+        case .ImageLoading:
+
+            .product(
+                name: "ImageLoading",
+                package: "ImageLoading"
             )
         }
     }
@@ -155,6 +164,7 @@ extension BasketFeature {
                 .utility(.Utils),
                 .utility(.PresentationCore),
                 .utility(.DesignSystem),
+                .utility(.ImageLoading),
             ]
         }
 

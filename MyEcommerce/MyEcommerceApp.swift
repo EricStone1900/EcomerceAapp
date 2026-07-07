@@ -1,5 +1,7 @@
 import SwiftUI
 
+import ImageLoading
+
 import ProductsFeature
 import LoginFeature
 import BasketFeature
@@ -34,6 +36,8 @@ enum Screen {
     case Basket
 
     case webTest
+
+    case moduleTest
 }
 
 final class TabRouter: ObservableObject {
@@ -53,6 +57,9 @@ struct MyEcommerceApp: App {
     @StateObject private var loginViewModel = LoginViewModel()
             
     init() {
+
+        // Configure global image cache
+        ImageCacheBootstrap.configure()
 
         DIContainer.registerAPIProvider()
 
@@ -133,6 +140,15 @@ struct MyEcommerceApp: App {
                             .tag(Screen.webTest)
                             .tabItem {
                                 Label("WebTest", systemImage: "globe")
+                            }
+
+                            NavigationStack {
+                                ModuleTestView()
+                                    .navigationTitle("ModuleTest")
+                            }
+                            .tag(Screen.moduleTest)
+                            .tabItem {
+                                Label("ModuleTest", systemImage: "square.stack.3d.up.fill")
                             }
                         }
                         
