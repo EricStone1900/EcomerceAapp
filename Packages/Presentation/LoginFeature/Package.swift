@@ -9,10 +9,10 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
-        .package(path: "../Abstraction"),
-        .package(path: "../Utilities/Utils"),
-        .package(path: "../Utilities/PresentationCore"),
-        .package(path: "../Utilities/DesignSystem"),
+        .package(path: "../../Abstraction"),
+        .package(path: "../../Utilities/Utils"),
+        .package(path: "../../Utilities/PresentationCore"),
+        .package(path: "../../Utilities/DesignSystem"),
 
     ],
     targets: LoginFeature.allCases.map(\.target) + LoginFeature.allCases.flatMap(\.testsTargets)

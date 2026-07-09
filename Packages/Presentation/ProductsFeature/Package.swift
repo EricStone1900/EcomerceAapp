@@ -4,16 +4,16 @@ import PackageDescription
 
 let package = Package(
     name: "ProductsFeature",
-    platforms: [.iOS(.v18)],
+    platforms: [.iOS(.v18), .macOS(.v15)],
     products: ProductsFeature.allCases.map(\.product),
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
-        .package(path: "../Abstraction"),
-        .package(path: "../Utilities/Utils"),
-        .package(path: "../Utilities/PresentationCore"),
-        .package(path: "../Utilities/DesignSystem"),
-        .package(path: "../Utilities/ImageLoading"),
+        .package(path: "../../Abstraction"),
+        .package(path: "../../Utilities/Utils"),
+        .package(path: "../../Utilities/PresentationCore"),
+        .package(path: "../../Utilities/DesignSystem"),
+        .package(path: "../../Utilities/ImageLoading"),
     ],
     targets: ProductsFeature.allCases.map(\.target) + ProductsFeature.allCases.flatMap(\.testsTargets)
 )
@@ -71,6 +71,8 @@ enum AbstractionModule: String {
 
     case AnalyticsAbstraction
 
+    case SpeechAbstraction
+
     case RoutingAbstraction
 
     var dependency: Target.Dependency {
@@ -109,6 +111,13 @@ enum AbstractionModule: String {
 
             .product(
                 name: "RoutingAbstraction",
+                package: "Abstraction"
+            )
+
+        case .SpeechAbstraction:
+
+            .product(
+                name: "SpeechAbstraction",
                 package: "Abstraction"
             )
         }
@@ -187,6 +196,7 @@ extension ProductsFeature {
                 .external(.RxSwift),
                 .external(.Swinject),
                 .abstraction(.ProductAbstraction),
+                .abstraction(.SpeechAbstraction),
                 .abstraction(.BasketAbstraction),
                 .abstraction(.DIAbstraction),
                 .abstraction(.AnalyticsAbstraction),

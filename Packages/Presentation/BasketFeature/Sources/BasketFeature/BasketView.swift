@@ -4,19 +4,19 @@ import DesignSystem
 import ImageLoading
 
 public struct BasketView: View {
-    
+
     @StateObject var viewModel: BasketViewModel = BasketViewModel()
-    
+
     let userId: UUID
-    
+
     public init(userId: UUID) {
-        
+
         self.userId = userId
     }
-    
+
     public var body: some View {
         VStack {
-            
+
             if viewModel.baskets.isEmpty {
                 Text ("Your cart is empty")
                     .designPadding(.l)
@@ -42,6 +42,26 @@ public struct BasketView: View {
                     }
                 }
                 .listStyle(InsetGroupedListStyle())
+
+                // Speak summary button
+                HStack {
+                    Button(action: {
+                        if viewModel.isSpeaking {
+                            viewModel.stopSpeaking()
+                        } else {
+                            viewModel.speakSummary()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: viewModel.isSpeaking ? "stop.circle.fill" : "speaker.wave.2.fill")
+                            Text(viewModel.isSpeaking ? "停止播报" : "语音播报购物车摘要")
+                        }
+                        .font(.appCallout)
+                        .foregroundColor(.appPrimary)
+                    }
+                    .designPadding(.l)
+                }
+
                 HStack {
                     Spacer()
                     Text("Total: \(String(format:"%.2f", viewModel.calculateTotalPrice()))")
@@ -52,6 +72,9 @@ public struct BasketView: View {
         }
         .onAppear {
             viewModel.getBasket(userId: userId)
+        }
+        .onDisappear {
+            viewModel.onDisappear()
         }
     }
 }

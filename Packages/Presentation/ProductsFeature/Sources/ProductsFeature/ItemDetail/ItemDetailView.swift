@@ -20,8 +20,25 @@ struct ItemDetailView: View {
 
             VStack(alignment: .leading, spacing: .spacingM) {
 
-                Text(viewModel.product.name)
-                    .font(.appTitle)
+                HStack {
+                    Text(viewModel.product.name)
+                        .font(.appTitle)
+
+                    Spacer()
+
+                    // Speak button
+                    Button(action: {
+                        if viewModel.isSpeaking {
+                            viewModel.stopSpeaking()
+                        } else {
+                            viewModel.speakProduct()
+                        }
+                    }) {
+                        Image(systemName: viewModel.isSpeaking ? "stop.circle.fill" : "speaker.wave.2.fill")
+                            .foregroundColor(.appPrimary)
+                            .font(.appTitle2)
+                    }
+                }
 
                 Text(viewModel.product.description)
                     .font(.appBody)
@@ -43,5 +60,8 @@ struct ItemDetailView: View {
             .buttonStyle(.borderedProminent)
         }
         .designPadding(.l)
+        .onDisappear {
+            viewModel.onDisappear()
+        }
     }
 }

@@ -9,11 +9,11 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject", .upToNextMajor(from: "2.9.1")),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
-        .package(path: "../Abstraction"),
+        .package(path: "../../Abstraction"),
         .package(path: "../Domain"),
-        .package(path: "../Utilities/Utils"),
-        .package(path: "../Utilities/PresentationCore"),
-        .package(path: "../Utilities/DesignSystem"),
+        .package(path: "../../Utilities/Utils"),
+        .package(path: "../../Utilities/PresentationCore"),
+        .package(path: "../../Utilities/DesignSystem"),
     ],
     targets: WebContainerFeatureProduct.allCases.map(\.target) + WebContainerFeatureProduct.allCases.flatMap(\.testsTargets)
 )

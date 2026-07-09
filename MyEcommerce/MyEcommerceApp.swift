@@ -30,6 +30,8 @@ import PresentationCore
 
 import ImageLoading
 
+import SpeechKit
+
 enum Screen {
     case Products
 
@@ -85,6 +87,13 @@ struct MyEcommerceApp: App {
         DIContainer.registerNavigateUseCase()
         DIContainer.registerPresentationCore()
         DIContainer.registerAllFeatureRouteFactories()
+
+        // 语音能力 DI 注册
+        DIContainer.registerSpeechKitASR()
+        DIContainer.registerSpeechKitTTS()
+        DIContainer.registerVoiceSearchUseCase()
+        DIContainer.registerSpeakProductUseCase()
+        DIContainer.registerSpeakBasketUseCase()
 
         DIContainer.registerWebContainerData()
         DIContainer.registerLoadWebContentUseCase()

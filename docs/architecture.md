@@ -26,12 +26,13 @@ MyEcommerceAppDemo/
 │   │       ├── AnalyticsAbstraction/     #   分析域协议：事件上报用例协议
 │   │       ├── DIAbstraction/            #   DI 容器（Swinject Container 单例封装）
 │   │       ├── RoutingAbstraction/       #   路由域协议：AppRoute、RouterProtocol、RouteConfiguration
+│   │       └── SpeechAbstraction/        #   语音能力协议：ASR + TTS（依赖 RxSwift）
 │   │       └── WebContainerAbstraction/  #   WebView 桥接协议
 │   │
 │   ├── Domain/                           # 【业务逻辑层】UseCase 实现
 │   │   ├── Package.swift
 │   │   └── Sources/Domain/
-│   │       ├── ProductDomain/            #   商品用例：GetProductsUseCase
+│   │       ├── ProductDomain/            #   商品用例：GetProductsUseCase、VoiceSearchProductsUseCase、SpeakProductDetailUseCase
 │   │       ├── BasketDomain/             #   购物车用例：AddProduct / GetBasket
 │   │       ├── UserDomain/               #   用户用例：LoginUserUseCase
 │   │       ├── AnalyticsDomain/          #   分析用例：SendProductDetailAnalyticsData、TrackPageLifecycleUseCase
@@ -72,6 +73,7 @@ MyEcommerceAppDemo/
 │       ├── ImageLoading/                  #   远程图片加载（Kingfisher 封装门面）
 │       ├── Utils/                        #   工具：RxObservable → Combine Publisher 桥接
 │       ├── Analytics/                    #   简易分析封装（打印事件）
+│       ├── SpeechKit/                    #   语音识别与合成（ParakeetASR + KokoroTTS，speech-swift）
 │       └── PresentationCore/             #   路由 UI 基类：BaseHostingController、BaseNavigationController
 │
 ├── docs/

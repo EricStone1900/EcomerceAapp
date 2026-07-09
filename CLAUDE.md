@@ -250,6 +250,65 @@ AppRemoteImage(url: product.imageURL)
 不要直接 import Kingfisher 使用 `KFImage`，所有 Feature 包应只依赖 `ImageLoading`。
 全局缓存策略在 `MyEcommerceApp.init()` 中通过 `ImageCacheBootstrap.configure()` 统一配置，Feature 包无需关心。
 
+## Speech/语音能力
+
+### 依赖倒置
+
+业务层（Feature/Domain）只依赖 `SpeechAbstraction` 包中的协议，不直接 import speech-swift：
+
+```swift
+// 正确做法
+import SpeechAbstraction      // ✅
+import RxSwift
+
+// ❌ 不要直接 import speech-swift
+// import ParakeetASR
+// import KokoroTTS
+```
+
+### 可用协议
+
+| 协议 | 用途 | 所在包 |
+|------|------|--------|
+| `SpeechRecognizerProtocol` | 语音转文字（ASR） | SpeechAbstraction |
+| `SpeechSynthesizerProtocol` | 文字转语音（TTS） | SpeechAbstraction |
+
+### UseCase 使用示例
+
+```swift
+// Domain/UseCase 层编排
+final class VoiceSearchProductsUseCase {
+    private let recognizer: SpeechRecognizerProtocol
+    private let searchUseCase: GetProductsUseCaseProtocol
+
+    func execute(trigger: Observable<Void>) -> Observable<VoiceSearchState> {
+        // 编排语音识别 + 商品搜索
+    }
+}
+```
+
+### 权限
+
+语音功能需要在 Xcode target → Info 中配置：
+- `NSMicrophoneUsageDescription` — 语音搜索需要访问麦克风（已配置）
+
+### 模型下载
+
+- 语音模型（Kokoro ~80-170MB）在首次使用时自动下载
+- 仅首次下载需要联网，之后完全离线推理
+- 推荐在 Wi-Fi 环境下首次使用
+- 下载进度可通过 `SpeechModelDownloadStatus`（`.downloading(progress:)`）获取
+
+### DI 注册顺序
+
+```swift
+DIContainer.registerSpeechKitASR()        // SpeechKit ASR + 权限
+DIContainer.registerSpeechKitTTS()        // SpeechKit TTS
+DIContainer.registerVoiceSearchUseCase()  // 语音搜索 UseCase
+DIContainer.registerSpeakProductUseCase() // 商品播报 UseCase
+DIContainer.registerSpeakBasketUseCase()  // 购物车播报 UseCase
+```
+
 ## Common Development Tasks
 
 ### Adding a New Feature

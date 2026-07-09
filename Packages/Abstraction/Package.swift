@@ -27,6 +27,8 @@ enum AbstractionProduct: String, CaseIterable {
 
     case RoutingAbstraction
 
+    case SpeechAbstraction
+
     case WebContainerAbstraction
 
     // MARK: - Properties
@@ -81,7 +83,8 @@ extension AbstractionProduct {
     var testsTargets: [Target] {
         switch self {
         case .WebContainerAbstraction,
-                .RoutingAbstraction:
+                .RoutingAbstraction,
+                .SpeechAbstraction:
             return []
 
         default:
@@ -99,12 +102,14 @@ extension AbstractionProduct {
             
         case .ProductAbstraction:
             [
-                .external(.RxSwift)
+                .external(.RxSwift),
+                .internal(.SpeechAbstraction),
             ]
             
         case .BasketAbstraction:
             [
-                .external(.RxSwift)
+                .external(.RxSwift),
+                .internal(.SpeechAbstraction),
             ]
             
         case .UserAbstraction:
@@ -128,6 +133,11 @@ extension AbstractionProduct {
             ]
 
         case .WebContainerAbstraction:
+            [
+                .external(.RxSwift)
+            ]
+
+        case .SpeechAbstraction:
             [
                 .external(.RxSwift)
             ]
@@ -171,7 +181,12 @@ extension AbstractionProduct {
 
         case .WebContainerAbstraction:
             [
-                .internal(.WebContainerAbstraction)
+                .internal(.WebContainerAbstraction),
+            ]
+
+        case .SpeechAbstraction:
+            [
+                .internal(.SpeechAbstraction),
             ]
         }
     }

@@ -71,6 +71,8 @@ enum AbstractionModule: String {
 
     case RoutingAbstraction
 
+    case SpeechAbstraction
+
     case WebContainerAbstraction
 
     var dependency: Target.Dependency {
@@ -123,6 +125,13 @@ enum AbstractionModule: String {
                 name: "WebContainerAbstraction",
                 package: "Abstraction"
             )
+
+        case .SpeechAbstraction:
+
+            .product(
+                name: "SpeechAbstraction",
+                package: "Abstraction"
+            )
         }
     }
 }
@@ -159,6 +168,7 @@ extension DomainProduct {
             [
                 .external(.RxSwift),
                 .abstraction(.BasketAbstraction),
+                .abstraction(.SpeechAbstraction),
                 .abstraction(.DIAbstraction)
 
             ]
@@ -167,6 +177,7 @@ extension DomainProduct {
             [
                 .external(.RxSwift),
                 .abstraction(.ProductAbstraction),
+                .abstraction(.SpeechAbstraction),
                 .abstraction(.DIAbstraction)
             ]
             

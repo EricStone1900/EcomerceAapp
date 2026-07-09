@@ -1,5 +1,6 @@
 import DIAbstraction
 import BasketAbstraction
+import SpeechAbstraction
 
 import RxSwift
 
@@ -24,6 +25,16 @@ extension DIContainer {
             let repo = DIContainer.shared.resolve(BasketRepositoryProtocol.self)
 
             return GetBasketUseCase(basketRepository: repo!)
+        }
+    }
+
+    @MainActor
+    public static func registerSpeakBasketUseCase() {
+        DIContainer.shared.register(SpeakBasketSummaryUseCaseProtocol.self) { resolver in
+            SpeakBasketSummaryUseCase(
+                speechSynthesizer: resolver.resolve(SpeechSynthesizerProtocol.self)!,
+                getBasketUseCase: resolver.resolve(GetBasketUseCaseProtocol.self)!
+            )
         }
     }
 }
