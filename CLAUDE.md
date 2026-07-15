@@ -69,7 +69,7 @@ Presentation/Features → Domain → Abstraction ← Data
 
 ### Package Structure Pattern
 
-Every `Package.swift` uses `swift-tools-version: 6.2` targeting iOS 15. Most follow a **`CaseIterable` enum-based pattern** with typed dependency helpers:
+Every `Package.swift` uses `swift-tools-version: 6.2` targeting iOS 18 (raised from iOS 15). Most follow a **`CaseIterable` enum-based pattern** with typed dependency helpers:
 
 ```swift
 enum DomainProduct: String, CaseIterable {
@@ -81,7 +81,7 @@ enum DomainProduct: String, CaseIterable {
 // Dependency helpers: .internal(.ProductDomain), .external(.RxSwift), .abstraction(.BasketAbstraction), .utility(.API)
 ```
 
-**Exceptions** (traditional `Package.swift` without the enum pattern): `PresentationCore`, `Analytics`, and `Networking/API` use explicit target definitions instead.
+**Exceptions** (traditional `Package.swift` without the enum pattern): `PresentationCore` and `Analytics` use explicit target definitions instead.
 
 To add a new target to an existing package using the enum pattern:
 1. Add a new case to the `CaseIterable` enum

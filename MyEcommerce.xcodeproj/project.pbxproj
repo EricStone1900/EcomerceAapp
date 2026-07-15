@@ -32,6 +32,12 @@
 		58D562DC2FFA7DAF00014B49 /* RoutingDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DB2FFA7DAF00014B49 /* RoutingDomain */; };
 		58D562DE2FFA7DB900014B49 /* RoutingData in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DD2FFA7DB900014B49 /* RoutingData */; };
 		58D562E02FFA7DD300014B49 /* RoutingAbstraction in Frameworks */ = {isa = PBXBuildFile; productRef = 58D562DF2FFA7DD300014B49 /* RoutingAbstraction */; };
+		C5EF8EBB30052D4500A0D30E /* CameraVision in Frameworks */ = {isa = PBXBuildFile; productRef = C5EF8EBA30052D4500A0D30E /* CameraVision */; };
+		C5EF8EEB3005379D00A0D30E /* CameraFilters in Frameworks */ = {isa = PBXBuildFile; productRef = C5EF8EEA3005379D00A0D30E /* CameraFilters */; };
+		C5EF8EED3005379D00A0D30E /* CameraML in Frameworks */ = {isa = PBXBuildFile; productRef = C5EF8EEC3005379D00A0D30E /* CameraML */; };
+		C5FC40623003BD4E002735F4 /* CameraCore in Frameworks */ = {isa = PBXBuildFile; productRef = C5FC40613003BD4E002735F4 /* CameraCore */; };
+		C5FC40643003BD4F002735F4 /* CameraFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C5FC40633003BD4F002735F4 /* CameraFeature */; };
+		C5FC40663003BD4F002735F4 /* CameraUI in Frameworks */ = {isa = PBXBuildFile; productRef = C5FC40653003BD4F002735F4 /* CameraUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +74,14 @@
 		58244B242FFBE74500611683 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		58D562502FFA66D200014B49 /* PresentationCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PresentationCore; sourceTree = "<group>"; };
 		58D797522FFCAC6C007BCE5E /* ImageLoading */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImageLoading; sourceTree = "<group>"; };
+		C5EF8EB830052D0F00A0D30E /* CameraVision */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraVision; sourceTree = "<group>"; };
+		C5EF8EB930052D1E00A0D30E /* CameraPipeline */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraPipeline; sourceTree = "<group>"; };
+		C5EF8EE83005376700A0D30E /* CameraFilters */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraFilters; sourceTree = "<group>"; };
+		C5EF8EE93005376700A0D30E /* CameraML */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraML; sourceTree = "<group>"; };
+		C5FC40203003B8AC002735F4 /* CameraCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraCore; sourceTree = "<group>"; };
+		C5FC40213003B8AC002735F4 /* CameraFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraFeature; sourceTree = "<group>"; };
+		C5FC40223003B8AC002735F4 /* CameraUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CameraUI; sourceTree = "<group>"; };
+		C5FC40233003B8AC002735F4 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Shared; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -100,20 +114,26 @@
 				38F690C32E58EFAE009220B0 /* UserData in Frameworks */,
 				5807AA8B2FF36CBF00073536 /* WebContainerData in Frameworks */,
 				38F43DE22CBC0ADE002EACA3 /* LoginFeature in Frameworks */,
+				C5EF8EEB3005379D00A0D30E /* CameraFilters in Frameworks */,
 				38CD379D2CC29598009D657A /* DIAbstraction in Frameworks */,
 				38CD379B2CC29598009D657A /* BasketAbstraction in Frameworks */,
 				38CD37A72CC2959F009D657A /* UserDomain in Frameworks */,
 				38958B292CC053DF00FECB60 /* BasketFeature in Frameworks */,
+				C5FC40663003BD4F002735F4 /* CameraUI in Frameworks */,
 				38F690C12E58EFAD009220B0 /* ProductData in Frameworks */,
 				38CD37A12CC29598009D657A /* UserAbstraction in Frameworks */,
 				38CD37A52CC2959F009D657A /* ProductDomain in Frameworks */,
 				38CD37B52CC29665009D657A /* API in Frameworks */,
 				38AB65F02CBACF3B00E1D034 /* ProductsFeature in Frameworks */,
+				C5EF8EBB30052D4500A0D30E /* CameraVision in Frameworks */,
+				C5FC40623003BD4E002735F4 /* CameraCore in Frameworks */,
+				C5EF8EED3005379D00A0D30E /* CameraML in Frameworks */,
 				38CD37A32CC2959F009D657A /* BasketDomain in Frameworks */,
 				38CD379F2CC29598009D657A /* ProductAbstraction in Frameworks */,
 				5807AA892FF36CBF00073536 /* WebContainerAbstraction in Frameworks */,
 				58D562E02FFA7DD300014B49 /* RoutingAbstraction in Frameworks */,
 				58D562DC2FFA7DAF00014B49 /* RoutingDomain in Frameworks */,
+				C5FC40643003BD4F002735F4 /* CameraFeature in Frameworks */,
 				38F690BF2E58E51D009220B0 /* BasketData in Frameworks */,
 				58D562DE2FFA7DB900014B49 /* RoutingData in Frameworks */,
 				38461F632E5A412F0048247E /* AnalyticsAbstraction in Frameworks */,
@@ -174,6 +194,7 @@
 		38E817B82CB84ED600086B2A /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				C5FC40243003B8AC002735F4 /* Camera */,
 				38AB65E32CBA8A4900E1D034 /* Abstraction */,
 				38F690BD2E58E0DD009220B0 /* Data */,
 				38AB65E42CBA90F000E1D034 /* Domain */,
@@ -201,6 +222,21 @@
 				38F690BB2E58E099009220B0 /* Utils */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		C5FC40243003B8AC002735F4 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				C5EF8EE83005376700A0D30E /* CameraFilters */,
+				C5EF8EE93005376700A0D30E /* CameraML */,
+				C5EF8EB930052D1E00A0D30E /* CameraPipeline */,
+				C5EF8EB830052D0F00A0D30E /* CameraVision */,
+				C5FC40203003B8AC002735F4 /* CameraCore */,
+				C5FC40213003B8AC002735F4 /* CameraFeature */,
+				C5FC40223003B8AC002735F4 /* CameraUI */,
+				C5FC40233003B8AC002735F4 /* Shared */,
+			);
+			path = Camera;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,6 +283,12 @@
 				58D562DB2FFA7DAF00014B49 /* RoutingDomain */,
 				58D562DD2FFA7DB900014B49 /* RoutingData */,
 				58D562DF2FFA7DD300014B49 /* RoutingAbstraction */,
+				C5FC40613003BD4E002735F4 /* CameraCore */,
+				C5FC40633003BD4F002735F4 /* CameraFeature */,
+				C5FC40653003BD4F002735F4 /* CameraUI */,
+				C5EF8EBA30052D4500A0D30E /* CameraVision */,
+				C5EF8EEA3005379D00A0D30E /* CameraFilters */,
+				C5EF8EEC3005379D00A0D30E /* CameraML */,
 			);
 			productName = MyEcommerce;
 			productReference = 38E8178B2CB84D6500086B2A /* MyEcommerce.app */;
@@ -534,9 +576,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MyEcommerce/Preview Content\"";
-				DEVELOPMENT_TEAM = 458N84TBWR;
+				DEVELOPMENT_TEAM = AG9N8EA5ER;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "need camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -563,9 +606,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MyEcommerce/Preview Content\"";
-				DEVELOPMENT_TEAM = 458N84TBWR;
+				DEVELOPMENT_TEAM = AG9N8EA5ER;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "need camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -808,6 +852,30 @@
 		58D562DF2FFA7DD300014B49 /* RoutingAbstraction */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RoutingAbstraction;
+		};
+		C5EF8EBA30052D4500A0D30E /* CameraVision */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraVision;
+		};
+		C5EF8EEA3005379D00A0D30E /* CameraFilters */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraFilters;
+		};
+		C5EF8EEC3005379D00A0D30E /* CameraML */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraML;
+		};
+		C5FC40613003BD4E002735F4 /* CameraCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraCore;
+		};
+		C5FC40633003BD4F002735F4 /* CameraFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraFeature;
+		};
+		C5FC40653003BD4F002735F4 /* CameraUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CameraUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

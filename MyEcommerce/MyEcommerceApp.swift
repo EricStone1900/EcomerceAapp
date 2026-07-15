@@ -30,6 +30,9 @@ import PresentationCore
 
 import ImageLoading
 
+import CameraFeature
+import CameraUI
+
 enum Screen {
     case Products
 
@@ -38,6 +41,33 @@ enum Screen {
     case webTest
 
     case moduleTest
+
+    case cameraTest
+
+    case camera
+}
+
+/// `AppCameraComposition.makeCameraFeature()` 构造真实的 `CameraSession`/`PipelineController`
+/// 等一整套依赖，代价不算便宜（虽然真正接触摄像头硬件要等 `CameraViewModel.start()`），不应该在
+/// `MyEcommerceApp.body` 每次重新求值时都跑一遍——`@State` 只在这个 View 的身份第一次出现时
+/// 构造一次，`context == nil` 这个门槛保证 `.task` 里的构造代码本身也只执行一次。
+private struct CameraTabContent: View {
+    @State private var context: CameraFeatureContext?
+
+    var body: some View {
+        Group {
+            if let context {
+                CameraView(context: context)
+            } else {
+                Color.black
+                    .overlay(ProgressView().tint(.white))
+            }
+        }
+        .task {
+            guard context == nil else { return }
+            context = AppCameraComposition.makeCameraFeature()
+        }
+    }
 }
 
 final class TabRouter: ObservableObject {
@@ -148,6 +178,24 @@ struct MyEcommerceApp: App {
                             .tag(Screen.moduleTest)
                             .tabItem {
                                 Label("ModuleTest", systemImage: "square.stack.3d.up.fill")
+                            }
+
+                            NavigationStack {
+                                CameraDebugView()
+                                    .navigationTitle("CameraTest")
+                            }
+                            .tag(Screen.cameraTest)
+                            .tabItem {
+                                Label("CameraTest", systemImage: "camera.fill")
+                            }
+
+                            NavigationStack {
+                                CameraTabContent()
+                                    .navigationTitle("Camera")
+                            }
+                            .tag(Screen.camera)
+                            .tabItem {
+                                Label("Camera", systemImage: "camera.aperture")
                             }
                         }
                         
